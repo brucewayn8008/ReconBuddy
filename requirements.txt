@@ -7,10 +7,28 @@ tqdm>=4.65.0
 # Database and ORM
 alembic>=1.11.0  # For database migrations
 
-# Utility packages
-python-dotenv>=1.0.0  # For environment variable management
+# HTTP and API
 requests>=2.31.0
+aiohttp>=3.8.0
+urllib3>=2.0.0
+
+# Configuration and parsing
+python-dotenv>=1.0.0  # For environment variable management
 pyyaml>=6.0.0
+jinja2>=3.0.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# CLI improvements
+click>=8.0.0
+rich>=13.0.0
+
+# Testing
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-asyncio>=0.21.0
 
 # Type checking and development tools
 mypy>=1.3.0
@@ -18,3 +36,11 @@ types-PyYAML>=6.0.0
 types-requests>=2.31.0
 black>=23.3.0  # Code formatting
 pylint>=2.17.0  # Code linting
+flake8>=6.0.0
+
+# Documentation
+sphinx>=7.0.0
+sphinx-rtd-theme>=1.2.0
+
+# Security
+cryptography>=41.0.0

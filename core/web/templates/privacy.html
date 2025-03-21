@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Privacy Policy</h5>
+            </div>
+            <div class="card-body">
+                <div class="privacy-content">
+                    <section class="mb-4">
+                        <h6>1. Introduction</h6>
+                        <p>At ReconBuddy, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service. Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the service.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h6>2. Information We Collect</h6>
+                        <p>We collect information that you provide directly to us:</p>
+                        <ul>
+                            <li>Account Information (name, email address, username, password)</li>
+                            <li>Scan Configuration and Settings</li>
+                            <li>Target Domain Information</li>
+                            <li>Scan Results and Reports</li>
+                            <li>Usage Data and Analytics</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-4">
+                        <h6>3. How We Use Your Information</h6>
+                        <p>We use the information we collect for various purposes:</p>
+                        <ul>
+                            <li>To provide and maintain our service</li>
+                            <li>To notify you about changes to our service</li>
+                            <li>To allow you to participate in interactive features</li>
+                            <li>To provide customer support</li>
+                            <li>To gather analysis or valuable information to improve our service</li>
+                            <li>To monitor the usage of our service</li>
+                            <li>To detect, prevent and address technical issues</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-4">
+                        <h6>4. Data Storage and Security</h6>
+                        <p>We implement appropriate technical and organizational security measures to protect your data:</p>
+                        <ul>
+                            <li>Encryption of data in transit and at rest</li>
+                            <li>Regular security assessments and audits</li>
+                            <li>Access controls and authentication mechanisms</li>
+                            <li>Secure data backup and recovery procedures</li>
+                            <li>Regular security training for our team</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-4">
+                        <h6>5. Data Retention</h6>
+                        <p>We will retain your information only for as long as is necessary for the purposes set out in this privacy policy. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h6>6. Third-Party Services</h6>
+                        <p>We may employ third-party companies and individuals for the following reasons:</p>
+                        <ul>
+                            <li>To facilitate our service</li>
+                            <li>To provide the service on our behalf</li>
+                            <li>To perform service-related services</li>
+                            <li>To assist us in analyzing how our service is used</li>
+                        </ul>
+                        <p>These third parties have access to your information only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h6>7. Your Data Rights</h6>
+                        <p>You have the following rights regarding your data:</p>
+                        <ul>
+                            <li>Right to access your data</li>
+                            <li>Right to rectify inaccurate data</li>
+                            <li>Right to request data deletion</li>
+                            <li>Right to restrict processing</li>
+                            <li>Right to data portability</li>
+                            <li>Right to object to processing</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-4">
+                        <h6>8. Cookies and Tracking</h6>
+                        <p>We use cookies and similar tracking technologies to track activity on our service and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h6>9. Children's Privacy</h6>
+                        <p>Our service does not address anyone under the age of 18. We do not knowingly collect personally identifiable information from anyone under the age of 18.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h6>10. Changes to This Privacy Policy</h6>
+                        <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "last updated" date.</p>
+                    </section>
+
+                    <section>
+                        <h6>11. Contact Us</h6>
+                        <p>If you have any questions about this Privacy Policy, please contact us:</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-envelope me-2"></i>Email: privacy@reconbuddy.com</li>
+                            <li><i class="fas fa-shield-alt me-2"></i>Data Protection Officer: dpo@reconbuddy.com</li>
+                            <li><i class="fas fa-map-marker-alt me-2"></i>Address: [Your Company Address]</li>
+                        </ul>
+                    </section>
+                </div>
+
+                <hr>
+
+                <div class="text-center mt-4">
+                    <p class="mb-3">Last updated: {{ last_updated }}</p>
+                    <button class="btn btn-primary" onclick="window.history.back()">
+                        <i class="fas fa-arrow-left me-2"></i>Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.privacy-content {
+    font-size: 0.95rem;
+}
+
+.privacy-content h6 {
+    color: var(--bs-primary);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.privacy-content ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.privacy-content ul li {
+    margin-bottom: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .privacy-content h6 {
+        color: var(--bs-primary-rgb);
+    }
+}
+</style>
+{% endblock %} 

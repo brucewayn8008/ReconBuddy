@@ -33,17 +33,17 @@ class ReconBuddy:
         self.db = Database()  # Initialize database connection
         
     def check_tool_availability(self, tools):
-        """Check if required tools are available."""
+    """Check if required tools are available."""
         logger.info("Checking tool availability.")
-        
-        for tool in tqdm(tools, desc="Checking tools"):
-            if not shutil.which(tool):
+    
+    for tool in tqdm(tools, desc="Checking tools"):
+        if not shutil.which(tool):
                 logger.critical(f"{tool} is not installed or not found in PATH.")
-                print(f"{Fore.RED}Error: {tool} is not installed or not found in PATH.{Style.RESET_ALL}")
-                sys.exit(1)
+            print(f"{Fore.RED}Error: {tool} is not installed or not found in PATH.{Style.RESET_ALL}")
+            sys.exit(1)
         
         logger.info("All tools are available.")
-        print(f"{Fore.GREEN}All tools are available.{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}All tools are available.{Style.RESET_ALL}")
 
     def run_scan(self, domain: str, scan_type: str = "full"):
         """Run a complete scan on a domain."""

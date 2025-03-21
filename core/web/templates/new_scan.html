@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}New Scan{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Start New Scan</h5>
+            </div>
+            <div class="card-body">
+                <form id="newScanForm" method="POST" action="{{ url_for('start_scan') }}">
+                    <!-- Target Information -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">Target Information</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="domain" class="form-label">Target Domain</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="domain" 
+                                           name="domain" 
+                                           placeholder="example.com"
+                                           required>
+                                    <div class="form-text">Enter the root domain to scan</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="scanType" class="form-label">Scan Type</label>
+                                    <select class="form-select" id="scanType" name="scan_type" required>
+                                        <option value="full">Full Scan</option>
+                                        <option value="passive">Passive Scan</option>
+                                        <option value="active">Active Scan</option>
+                                        <option value="subdomain">Subdomain Enumeration</option>
+                                        <option value="web">Web Vulnerabilities</option>
+                                        <option value="osint">OSINT</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scan Options -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">Scan Options</h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="threads" class="form-label">Threads</label>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="threads" 
+                                           name="threads" 
+                                           value="10"
+                                           min="1"
+                                           max="50">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="timeout" class="form-label">Timeout (seconds)</label>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="timeout" 
+                                           name="timeout" 
+                                           value="10"
+                                           min="1">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="outputDir" class="form-label">Output Directory</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="outputDir" 
+                                           name="output_dir" 
+                                           placeholder="scans/example.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" 
+                                           class="form-check-input" 
+                                           id="recursive" 
+                                           name="recursive">
+                                    <label class="form-check-label" for="recursive">
+                                        Recursive Scanning
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" 
+                                           class="form-check-input" 
+                                           id="deep" 
+                                           name="deep">
+                                    <label class="form-check-label" for="deep">
+                                        Deep Scan
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" 
+                                           class="form-check-input" 
+                                           id="quiet" 
+                                           name="quiet">
+                                    <label class="form-check-label" for="quiet">
+                                        Quiet Mode
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Configuration -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">Advanced Configuration</h6>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="customConfig" class="form-label">Custom Configuration</label>
+                                    <textarea class="form-control" 
+                                              id="customConfig" 
+                                              name="custom_config" 
+                                              rows="4"
+                                              placeholder="Enter custom configuration in JSON format"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play"></i> Start Scan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('newScanForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Validate domain
+    const domain = document.getElementById('domain').value;
+    if (!domain.match(/^([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/)) {
+        alert('Please enter a valid domain name');
+        return;
+    }
+
+    // Validate custom config JSON if provided
+    const customConfig = document.getElementById('customConfig').value;
+    if (customConfig) {
+        try {
+            JSON.parse(customConfig);
+        } catch (e) {
+            alert('Invalid JSON in custom configuration');
+            return;
+        }
+    }
+
+    // Generate output directory if not specified
+    if (!document.getElementById('outputDir').value) {
+        const scanType = document.getElementById('scanType').value;
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        document.getElementById('outputDir').value = `scans/${domain}/${scanType}_${timestamp}`;
+    }
+
+    // Submit the form
+    this.submit();
+});
+
+// Update available options based on scan type
+document.getElementById('scanType').addEventListener('change', function() {
+    const scanType = this.value;
+    const recursiveOption = document.getElementById('recursive');
+    const deepOption = document.getElementById('deep');
+    
+    switch(scanType) {
+        case 'passive':
+            recursiveOption.disabled = true;
+            deepOption.disabled = true;
+            break;
+        case 'subdomain':
+            recursiveOption.disabled = false;
+            deepOption.disabled = true;
+            break;
+        default:
+            recursiveOption.disabled = false;
+            deepOption.disabled = false;
+    }
+});
+</script>
+{% endblock %} 

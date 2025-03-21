@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Finding Details - {{ finding.type }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Finding Overview -->
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <span class="badge bg-{{ finding.severity_color }} me-2">{{ finding.severity }}</span>
+                    {{ finding.type }}
+                </h5>
+                <div>
+                    <button class="btn btn-primary" onclick="window.location.href='{{ url_for('export_finding', finding_id=finding.id) }}'">
+                        <i class="fas fa-download"></i> Export Finding
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Target Information</h6>
+                        <dl class="row">
+                            <dt class="col-sm-4">Domain</dt>
+                            <dd class="col-sm-8">{{ finding.target }}</dd>
+
+                            <dt class="col-sm-4">URL</dt>
+                            <dd class="col-sm-8">
+                                <a href="{{ finding.url }}" target="_blank" rel="noopener noreferrer">
+                                    {{ finding.url }}
+                                    <i class="fas fa-external-link-alt ms-1"></i>
+                                </a>
+                            </dd>
+
+                            {% if finding.ip_address %}
+                            <dt class="col-sm-4">IP Address</dt>
+                            <dd class="col-sm-8">{{ finding.ip_address }}</dd>
+                            {% endif %}
+
+                            {% if finding.port %}
+                            <dt class="col-sm-4">Port</dt>
+                            <dd class="col-sm-8">{{ finding.port }}</dd>
+                            {% endif %}
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Vulnerability Details</h6>
+                        <dl class="row">
+                            <dt class="col-sm-4">Severity</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge bg-{{ finding.severity_color }}">{{ finding.severity }}</span>
+                            </dd>
+
+                            {% if finding.cwe %}
+                            <dt class="col-sm-4">CWE</dt>
+                            <dd class="col-sm-8">
+                                <a href="https://cwe.mitre.org/data/definitions/{{ finding.cwe }}.html" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer">
+                                    CWE-{{ finding.cwe }}
+                                    <i class="fas fa-external-link-alt ms-1"></i>
+                                </a>
+                            </dd>
+                            {% endif %}
+
+                            {% if finding.cve %}
+                            <dt class="col-sm-4">CVE</dt>
+                            <dd class="col-sm-8">
+                                <a href="https://nvd.nist.gov/vuln/detail/{{ finding.cve }}" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer">
+                                    {{ finding.cve }}
+                                    <i class="fas fa-external-link-alt ms-1"></i>
+                                </a>
+                            </dd>
+                            {% endif %}
+
+                            {% if finding.cvss %}
+                            <dt class="col-sm-4">CVSS Score</dt>
+                            <dd class="col-sm-8">{{ finding.cvss }}</dd>
+                            {% endif %}
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description and Impact -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Description and Impact</h5>
+            </div>
+            <div class="card-body">
+                <h6>Description</h6>
+                <p class="mb-4">{{ finding.description }}</p>
+
+                {% if finding.impact %}
+                <h6>Impact</h6>
+                <p>{{ finding.impact }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Evidence -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Evidence</h5>
+            </div>
+            <div class="card-body">
+                <pre><code class="evidence-code">{{ finding.evidence }}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remediation -->
+    {% if finding.remediation %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Remediation</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ finding.remediation }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- References -->
+    {% if finding.references %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">References</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    {% for reference in finding.references %}
+                    <li class="mb-2">
+                        <i class="fas fa-link me-2"></i>
+                        <a href="{{ reference }}" target="_blank" rel="noopener noreferrer">
+                            {{ reference }}
+                            <i class="fas fa-external-link-alt ms-1"></i>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Additional Information -->
+    {% if finding.additional_info %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Additional Information</h5>
+            </div>
+            <div class="card-body">
+                <pre><code class="additional-info">{{ finding.additional_info }}</code></pre>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize syntax highlighting for code blocks
+document.querySelectorAll('pre code').forEach(block => {
+    hljs.highlightElement(block);
+});
+
+// Copy evidence to clipboard
+document.querySelector('.evidence-code').addEventListener('click', function() {
+    const text = this.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        const tooltip = bootstrap.Tooltip.getOrCreateInstance(this, {
+            title: 'Copied!',
+            trigger: 'manual'
+        });
+        tooltip.show();
+        setTimeout(() => tooltip.hide(), 1500);
+    });
+});
+</script>
+{% endblock %} 

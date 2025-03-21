@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Statistics Cards -->
+    <div class="col-12 mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Scans</h5>
+                        <h2 class="card-text">{{ stats.total_scans }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Scans</h5>
+                        <h2 class="card-text">{{ stats.active_scans }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Findings</h5>
+                        <h2 class="card-text">{{ stats.total_findings }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-danger text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Critical Vulnerabilities</h5>
+                        <h2 class="card-text">{{ stats.critical_vulns }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Scans -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Scans</h5>
+                <a href="{{ url_for('new_scan') }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> New Scan
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Domain</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Findings</th>
+                                <th>Started</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for scan in scans %}
+                            <tr>
+                                <td>{{ scan.domain }}</td>
+                                <td>
+                                    <span class="badge bg-info">{{ scan.scan_type }}</span>
+                                </td>
+                                <td>
+                                    {% if scan.status == 'completed' %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elif scan.status == 'running' %}
+                                        <span class="badge bg-warning">Running</span>
+                                    {% elif scan.status == 'failed' %}
+                                        <span class="badge bg-danger">Failed</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ scan.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ scan.findings|length }}</td>
+                                <td>{{ scan.start_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <a href="{{ url_for('scan_details', scan_id=scan.id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    {% if scan.status == 'running' %}
+                                    <button class="btn btn-sm btn-outline-danger stop-scan" 
+                                            data-scan-id="{{ scan.id }}">
+                                        <i class="fas fa-stop"></i>
+                                    </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics and Charts -->
+    <div class="col-md-4">
+        <!-- Vulnerability Distribution -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Vulnerability Distribution</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="vulnChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                <div class="activity-feed">
+                    {% for activity in activities %}
+                    <div class="activity-item">
+                        <i class="fas fa-{{ activity.icon }} text-{{ activity.color }}"></i>
+                        <span class="activity-text">{{ activity.text }}</span>
+                        <small class="text-muted">{{ activity.time }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Vulnerability Distribution Chart
+const ctx = document.getElementById('vulnChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Critical', 'High', 'Medium', 'Low', 'Info'],
+        datasets: [{
+            data: [
+                {{ stats.vuln_critical }},
+                {{ stats.vuln_high }},
+                {{ stats.vuln_medium }},
+                {{ stats.vuln_low }},
+                {{ stats.vuln_info }}
+            ],
+            backgroundColor: [
+                '#dc3545',
+                '#fd7e14',
+                '#ffc107',
+                '#20c997',
+                '#0dcaf0'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Real-time scan status updates
+function updateScanStatus() {
+    document.querySelectorAll('[data-scan-id]').forEach(element => {
+        const scanId = element.dataset.scanId;
+        fetch(`/api/scan_status/${scanId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Update status badges and progress
+                const statusCell = element.closest('tr').querySelector('td:nth-child(3)');
+                statusCell.innerHTML = `<span class="badge bg-${data.status === 'completed' ? 'success' : 'warning'}">${data.status}</span>`;
+            });
+    });
+}
+
+// Update status every 30 seconds for running scans
+setInterval(updateScanStatus, 30000);
+
+// Stop scan functionality
+document.querySelectorAll('.stop-scan').forEach(button => {
+    button.addEventListener('click', function() {
+        const scanId = this.dataset.scanId;
+        if (confirm('Are you sure you want to stop this scan?')) {
+            fetch(`/api/stop_scan/${scanId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        location.reload();
+                    }
+                });
+        }
+    });
+});
+</script>
+{% endblock %} 

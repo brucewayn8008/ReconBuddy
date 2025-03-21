@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}{{ error.code }} - {{ error.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="error-page my-5">
+            <h1 class="display-1 text-{{ error.color }}">{{ error.code }}</h1>
+            <h2 class="mb-4">{{ error.name }}</h2>
+            <p class="lead mb-4">{{ error.message }}</p>
+            
+            {% if error.code == 404 %}
+            <div class="mb-4">
+                <p>The page you're looking for might have been moved or doesn't exist.</p>
+                <p>Please check the URL or try one of these:</p>
+            </div>
+            {% elif error.code == 500 %}
+            <div class="mb-4">
+                <p>Something went wrong on our end. Our team has been notified.</p>
+                <p>Please try again later or contact support if the problem persists.</p>
+            </div>
+            {% endif %}
+
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <button class="btn btn-primary" onclick="window.location.href='{{ url_for('dashboard') }}'">
+                    <i class="fas fa-home me-2"></i>Go to Dashboard
+                </button>
+                <button class="btn btn-outline-secondary" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left me-2"></i>Go Back
+                </button>
+            </div>
+
+            {% if error.code == 500 and error.details %}
+            <div class="mt-4">
+                <div class="alert alert-danger">
+                    <h6 class="alert-heading">Error Details</h6>
+                    <hr>
+                    <pre class="mb-0"><code>{{ error.details }}</code></pre>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.error-page {
+    padding: 3rem 0;
+}
+
+.error-page h1 {
+    font-size: 6rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error-page pre {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+@media (max-width: 576px) {
+    .error-page h1 {
+        font-size: 4rem;
+    }
+}
+</style>
+{% endblock %} 

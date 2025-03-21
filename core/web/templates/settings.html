@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Settings</h5>
+            </div>
+            <div class="card-body">
+                <form id="settingsForm" method="POST" action="{{ url_for('save_settings') }}">
+                    <!-- General Settings -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">General Settings</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="defaultThreads" class="form-label">Default Threads</label>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="defaultThreads" 
+                                           name="default_threads" 
+                                           value="{{ config.default_threads }}"
+                                           min="1"
+                                           max="50">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="defaultTimeout" class="form-label">Default Timeout (seconds)</label>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="defaultTimeout" 
+                                           name="default_timeout" 
+                                           value="{{ config.default_timeout }}"
+                                           min="1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="scanOutputDir" class="form-label">Scan Output Directory</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="scanOutputDir" 
+                                           name="scan_output_dir" 
+                                           value="{{ config.scan_output_dir }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="logLevel" class="form-label">Log Level</label>
+                                    <select class="form-select" id="logLevel" name="log_level">
+                                        <option value="DEBUG" {% if config.log_level == 'DEBUG' %}selected{% endif %}>Debug</option>
+                                        <option value="INFO" {% if config.log_level == 'INFO' %}selected{% endif %}>Info</option>
+                                        <option value="WARNING" {% if config.log_level == 'WARNING' %}selected{% endif %}>Warning</option>
+                                        <option value="ERROR" {% if config.log_level == 'ERROR' %}selected{% endif %}>Error</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- API Keys -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">API Keys</h6>
+                        <div class="row">
+                            {% for api_name, api_key in config.api_keys.items() %}
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ api_name }}Key" class="form-label">{{ api_name|title }}</label>
+                                    <div class="input-group">
+                                        <input type="password" 
+                                               class="form-control" 
+                                               id="{{ api_name }}Key" 
+                                               name="api_keys[{{ api_name }}]" 
+                                               value="{{ api_key }}"
+                                               autocomplete="off">
+                                        <button class="btn btn-outline-secondary toggle-password" 
+                                                type="button"
+                                                data-target="{{ api_name }}Key">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Tool Configuration -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">Tool Configuration</h6>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Tool</th>
+                                        <th>Enabled</th>
+                                        <th>Configuration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for tool_name, tool_config in config.tools.items() %}
+                                    <tr>
+                                        <td>{{ tool_name|title }}</td>
+                                        <td>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" 
+                                                       type="checkbox" 
+                                                       id="{{ tool_name }}Enabled"
+                                                       name="tools[{{ tool_name }}][enabled]"
+                                                       {% if tool_config.enabled %}checked{% endif %}>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#toolConfigModal{{ tool_name }}">
+                                                Configure
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tool Configuration Modals -->
+{% for tool_name, tool_config in config.tools.items() %}
+<div class="modal fade" id="toolConfigModal{{ tool_name }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ tool_name|title }} Configuration</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="{{ tool_name }}Config" class="form-label">Configuration (JSON)</label>
+                    <textarea class="form-control tool-config-json" 
+                              id="{{ tool_name }}Config"
+                              name="tools[{{ tool_name }}][config]"
+                              rows="10">{{ tool_config.config|tojson(indent=2) }}</textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save-tool-config" data-tool="{{ tool_name }}">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Toggle password visibility
+document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+        const targetId = this.dataset.target;
+        const input = document.getElementById(targetId);
+        const icon = this.querySelector('i');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+});
+
+// Validate and format JSON in tool configuration
+document.querySelectorAll('.tool-config-json').forEach(textarea => {
+    textarea.addEventListener('blur', function() {
+        try {
+            const json = JSON.parse(this.value);
+            this.value = JSON.stringify(json, null, 2);
+            this.classList.remove('is-invalid');
+        } catch (e) {
+            this.classList.add('is-invalid');
+        }
+    });
+});
+
+// Save tool configuration
+document.querySelectorAll('.save-tool-config').forEach(button => {
+    button.addEventListener('click', function() {
+        const toolName = this.dataset.tool;
+        const configTextarea = document.getElementById(`${toolName}Config`);
+        
+        try {
+            JSON.parse(configTextarea.value);
+            const modal = bootstrap.Modal.getInstance(document.getElementById(`toolConfigModal${toolName}`));
+            modal.hide();
+        } catch (e) {
+            alert('Invalid JSON configuration');
+        }
+    });
+});
+
+// Form submission
+document.getElementById('settingsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Validate all tool configurations
+    let isValid = true;
+    document.querySelectorAll('.tool-config-json').forEach(textarea => {
+        try {
+            JSON.parse(textarea.value);
+        } catch (e) {
+            isValid = false;
+            textarea.classList.add('is-invalid');
+        }
+    });
+    
+    if (!isValid) {
+        alert('Please fix invalid tool configurations before saving');
+        return;
+    }
+    
+    // Submit the form
+    this.submit();
+});
+</script>
+{% endblock %} 
