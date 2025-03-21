@@ -1,5 +1,20 @@
-colorama
-tqdm
-logging
-requests
-concurrent.futures
+# Core dependencies
+sqlalchemy>=1.4.0
+psycopg2-binary>=2.9.0  # PostgreSQL adapter
+colorama>=0.4.6
+tqdm>=4.65.0
+
+# Database and ORM
+alembic>=1.11.0  # For database migrations
+
+# Utility packages
+python-dotenv>=1.0.0  # For environment variable management
+requests>=2.31.0
+pyyaml>=6.0.0
+
+# Type checking and development tools
+mypy>=1.3.0
+types-PyYAML>=6.0.0
+types-requests>=2.31.0
+black>=23.3.0  # Code formatting
+pylint>=2.17.0  # Code linting
