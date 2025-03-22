@@ -21,6 +21,7 @@ class ReconBuddyInstaller:
         self.base_dir = Path.home() / "ReconBuddy"
         self.tools_dir = self.base_dir / "tools"
         self.venv_dir = self.base_dir / "venv"
+        self.wordlists_dir = self.base_dir / "wordlists"
         self.system = platform.system().lower()
         
     def install(self):
@@ -40,14 +41,11 @@ class ReconBuddyInstaller:
             # Install Python dependencies
             self._install_python_dependencies()
             
-            # Install PostgreSQL
-            self._install_postgresql()
-            
-            # Set up database
-            self._setup_database()
-            
             # Install security tools
             self._install_security_tools()
+            
+            # Download wordlists
+            self._download_wordlists()
             
             # Configure environment
             self._configure_environment()
@@ -64,6 +62,7 @@ class ReconBuddyInstaller:
         print("📁 Creating directories...")
         os.makedirs(self.base_dir, exist_ok=True)
         os.makedirs(self.tools_dir, exist_ok=True)
+        os.makedirs(self.wordlists_dir, exist_ok=True)
         logger.info("Created base directories")
 
     def _install_system_dependencies(self):
@@ -73,14 +72,18 @@ class ReconBuddyInstaller:
         if self.system == "linux":
             packages = [
                 "git", "python3-pip", "python3-venv", "golang",
-                "build-essential", "libpq-dev", "jq"
+                "build-essential", "chromium-browser", "nmap",
+                "masscan", "whois", "jq", "make", "gcc"
             ]
             self._run_command(["sudo", "apt-get", "update"])
             self._run_command(["sudo", "apt-get", "install", "-y"] + packages)
             
         elif self.system == "darwin":  # macOS
             self._run_command(["brew", "update"])
-            packages = ["git", "python3", "go", "jq", "postgresql"]
+            packages = [
+                "git", "python3", "go", "nmap", "masscan",
+                "whois", "jq", "chromium", "make", "gcc"
+            ]
             for pkg in packages:
                 self._run_command(["brew", "install", pkg])
         else:
@@ -98,64 +101,97 @@ class ReconBuddyInstaller:
         pip = str(self.venv_dir / "bin" / "pip")
         
         requirements = [
-            "sqlalchemy>=1.4.0",
-            "psycopg2-binary>=2.9.0",
-            "colorama>=0.4.6",
+            "aiohttp>=3.8.0",
+            "beautifulsoup4>=4.9.0",
+            "dnspython>=2.1.0",
             "tqdm>=4.65.0",
-            "alembic>=1.11.0",
-            "python-dotenv>=1.0.0",
-            "requests>=2.31.0",
-            "pyyaml>=6.0.0"
+            "colorama>=0.4.6",
+            "python-whois>=0.7.0",
+            "selenium>=4.0.0",
+            "webdriver-manager>=3.8.0",
+            "aiodns>=3.0.0",
+            "aiosqlite>=0.17.0",
+            "aiofiles>=0.8.0",
+            "pyyaml>=6.0.0",
+            "jinja2>=3.0.0",
+            "cryptography>=3.4.0",
+            "requests>=2.31.0"
         ]
         
         for req in requirements:
             self._run_command([pip, "install", req])
 
-    def _install_postgresql(self):
-        """Install and configure PostgreSQL"""
-        print("🐘 Setting up PostgreSQL...")
-        
-        if self.system == "linux":
-            self._run_command(["sudo", "systemctl", "start", "postgresql"])
-            self._run_command(["sudo", "systemctl", "enable", "postgresql"])
-        elif self.system == "darwin":
-            self._run_command(["brew", "services", "start", "postgresql"])
-
-    def _setup_database(self):
-        """Set up ReconBuddy database"""
-        print("🗄️ Setting up database...")
-        
-        try:
-            self._run_command(["createdb", "reconbuddy"])
-            logger.info("Created reconbuddy database")
-        except Exception as e:
-            logger.warning(f"Database might already exist: {str(e)}")
-
     def _install_security_tools(self):
         """Install required security tools"""
         print("🛠️ Installing security tools...")
         
-        tools = [
-            ("reconftw", "git clone https://github.com/six2dez/reconftw.git"),
-            ("httpx", "go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest"),
-            ("nuclei", "go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest"),
-            ("amass", "go install -v github.com/OWASP/Amass/v3/...@master"),
-            ("subfinder", "go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest"),
-            ("assetfinder", "go install github.com/tomnomnom/assetfinder@latest"),
-            ("gobuster", "go install github.com/OJ/gobuster/v3@latest"),
-            ("hakrawler", "go install github.com/hakluke/hakrawler@latest"),
-            ("gau", "go install github.com/lc/gau/v2/cmd/gau@latest"),
-            ("waybackurls", "go install github.com/tomnomnom/waybackurls@latest"),
-            ("katana", "go install github.com/projectdiscovery/katana/cmd/katana@latest"),
-            ("anew", "go install github.com/tomnomnom/anew@latest")
-        ]
-
+        # Set up Go environment
         os.environ["GOPATH"] = str(Path.home() / "go")
         os.environ["PATH"] = os.environ["PATH"] + ":" + str(Path.home() / "go" / "bin")
+        
+        # Subdomain enumeration tools
+        go_tools = [
+            "github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest",
+            "github.com/OWASP/Amass/v3/...@master",
+            "github.com/tomnomnom/assetfinder@latest",
+            "github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest",
+            "github.com/ffuf/ffuf@latest",
+            "github.com/OJ/gobuster/v3@latest",
+            "github.com/tomnomnom/waybackurls@latest",
+            "github.com/lc/gau/v2/cmd/gau@latest",
+            "github.com/projectdiscovery/katana/cmd/katana@latest",
+            "github.com/hakluke/hakrawler@latest",
+            "github.com/jaeles-project/gospider@latest",
+            "github.com/projectdiscovery/httpx/cmd/httpx@latest",
+            "github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest",
+            "github.com/tomnomnom/anew@latest",
+            "github.com/projectdiscovery/naabu/v2/cmd/naabu@latest"
+        ]
+        
+        for tool in tqdm(go_tools, desc="Installing Go tools"):
+            try:
+                self._run_command(["go", "install", "-v", tool])
+            except Exception as e:
+                logger.error(f"Failed to install {tool}: {str(e)}")
+        
+        # Git-based tools
+        git_tools = [
+            ("massdns", "https://github.com/blechschmidt/massdns.git"),
+            ("SubDomainizer", "https://github.com/nsonaniya2010/SubDomainizer.git"),
+            ("Sublist3r", "https://github.com/aboul3la/Sublist3r.git"),
+            ("dnsvalidator", "https://github.com/vortexau/dnsvalidator.git")
+        ]
+        
+        for tool_name, repo_url in tqdm(git_tools, desc="Installing Git-based tools"):
+            tool_dir = self.tools_dir / tool_name
+            try:
+                self._run_command(["git", "clone", repo_url, str(tool_dir)])
+                if tool_name == "massdns":
+                    self._run_command(["make"], cwd=str(tool_dir))
+                elif tool_name in ["SubDomainizer", "Sublist3r"]:
+                    pip = str(self.venv_dir / "bin" / "pip")
+                    self._run_command([pip, "install", "-r", str(tool_dir / "requirements.txt")])
+            except Exception as e:
+                logger.error(f"Failed to install {tool_name}: {str(e)}")
 
-        for tool_name, install_cmd in tools:
-            print(f"Installing {tool_name}...")
-            self._run_command(install_cmd.split())
+    def _download_wordlists(self):
+        """Download and set up wordlists"""
+        print("📚 Downloading wordlists...")
+        
+        wordlists = [
+            ("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/DNS/deepmagic.com-prefixes-top50000.txt", "dns-prefixes.txt"),
+            ("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/DNS/subdomains-top1million-110000.txt", "subdomains-top1m.txt"),
+            ("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/directory-list-2.3-medium.txt", "directories-medium.txt"),
+            ("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/common.txt", "common-paths.txt"),
+            ("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/api/api-endpoints.txt", "api-endpoints.txt")
+        ]
+        
+        for url, filename in tqdm(wordlists, desc="Downloading wordlists"):
+            try:
+                output_file = self.wordlists_dir / filename
+                self._run_command(["curl", "-o", str(output_file), url])
+            except Exception as e:
+                logger.error(f"Failed to download {filename}: {str(e)}")
 
     def _configure_environment(self):
         """Configure environment variables and settings"""
@@ -163,9 +199,11 @@ class ReconBuddyInstaller:
         
         env_file = self.base_dir / ".env"
         env_vars = {
-            "RECONBUDDY_DB_URL": "postgresql://localhost:5432/reconbuddy",
             "RECONBUDDY_HOME": str(self.base_dir),
-            "PATH": f"$PATH:{str(Path.home())}/go/bin"
+            "RECONBUDDY_TOOLS": str(self.tools_dir),
+            "RECONBUDDY_WORDLISTS": str(self.wordlists_dir),
+            "GOPATH": str(Path.home() / "go"),
+            "PATH": f"$PATH:{str(Path.home())}/go/bin:{str(self.tools_dir)}/massdns/bin"
         }
         
         with open(env_file, "w") as f:
@@ -176,13 +214,13 @@ class ReconBuddyInstaller:
         shell_rc = Path.home() / (".bashrc" if self.system == "linux" else ".zshrc")
         with open(shell_rc, "a") as f:
             f.write(f"\n# ReconBuddy Environment Variables\n")
-            f.write(f'export RECONBUDDY_HOME="{str(self.base_dir)}"\n')
-            f.write('export PATH="$PATH:$HOME/go/bin"\n')
+            for key, value in env_vars.items():
+                f.write(f'export {key}="{value}"\n')
 
-    def _run_command(self, command: List[str]) -> None:
+    def _run_command(self, command: List[str], cwd: str = None) -> None:
         """Run a shell command"""
         try:
-            subprocess.run(command, check=True, capture_output=True, text=True)
+            subprocess.run(command, check=True, capture_output=True, text=True, cwd=cwd)
         except subprocess.CalledProcessError as e:
             logger.error(f"Command failed: {' '.join(command)}")
             logger.error(f"Error: {e.stderr}")
@@ -200,4 +238,4 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-    main() 
+    main()

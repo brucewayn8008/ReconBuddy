@@ -9,6 +9,8 @@ import logging
 from urllib.parse import urlparse
 import aiohttp
 import itertools
+from datetime import datetime
+import aiodns
 
 class SubdomainEnumerator:
     def __init__(self, target_domain: str, output_dir: str = "results", use_advanced: bool = True):
@@ -410,28 +412,110 @@ class SubdomainEnumerator:
         
         return all_subdomains
 
+    async def bruteforce_subdomains(self, domain: str) -> Set[str]:
+        """
+        Bruteforce subdomains using wordlists
+        
+        Args:
+            domain: Target domain
+        Returns:
+            Set of discovered subdomains
+        """
+        discovered = set()
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_file = self.output_dir / f"bruteforce_{timestamp}.txt"
+        
+        try:
+            # Use multiple wordlists for better coverage
+            wordlists = [
+                "wordlists/subdomains-top1million.txt",
+                "wordlists/dns-common.txt",
+                "wordlists/deepmagic.com-prefixes-top500.txt"
+            ]
+            
+            for wordlist in wordlists:
+                if not Path(wordlist).exists():
+                    self.logger.warning(f"Wordlist not found: {wordlist}")
+                    continue
+                    
+                self.logger.info(f"Bruteforcing using wordlist: {wordlist}")
+                
+                async with aiohttp.ClientSession() as session:
+                    async with open(wordlist) as f:
+                        tasks = []
+                        async for line in f:
+                            subdomain = f"{line.strip()}.{domain}"
+                            tasks.append(self._resolve_domain(session, subdomain))
+                            
+                            # Process in chunks to avoid overwhelming resources
+                            if len(tasks) >= 100:
+                                results = await asyncio.gather(*tasks, return_exceptions=True)
+                                discovered.update([r for r in results if r])
+                                tasks = []
+                        
+                        # Process remaining tasks
+                        if tasks:
+                            results = await asyncio.gather(*tasks, return_exceptions=True)
+                            discovered.update([r for r in results if r])
+            
+            # Save results
+            with open(output_file, 'w') as f:
+                for subdomain in sorted(discovered):
+                    f.write(f"{subdomain}\n")
+            
+            self.logger.info(f"Bruteforce completed. Found {len(discovered)} subdomains")
+            
+        except Exception as e:
+            self.logger.error(f"Error during subdomain bruteforce: {str(e)}")
+        
+        return discovered
+
+    async def _resolve_domain(self, session: aiohttp.ClientSession, domain: str) -> Optional[str]:
+        """
+        Attempt to resolve a domain using DNS
+        
+        Args:
+            session: aiohttp session
+            domain: Domain to resolve
+        Returns:
+            Domain if it resolves, None otherwise
+        """
+        try:
+            resolver = aiodns.DNSResolver()
+            await resolver.query(domain, 'A')
+            return domain
+        except Exception:
+            return None
+
+    async def run_enumeration(self, domain: str) -> Set[str]:
+        """Run complete subdomain enumeration"""
+        all_subdomains = set()
+        
+        # Run passive enumeration first
+        passive_results = await self.run_basic_enumeration()
+        all_subdomains.update(passive_results)
+        
+        # Run bruteforce enumeration
+        bruteforce_results = await self.bruteforce_subdomains(domain)
+        all_subdomains.update(bruteforce_results)
+        
+        # Save combined results
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_file = self.output_dir / f"all_subdomains_{timestamp}.txt"
+        
+        with open(output_file, 'w') as f:
+            for subdomain in sorted(all_subdomains):
+                f.write(f"{subdomain}\n")
+        
+        self.logger.info(f"Total unique subdomains found: {len(all_subdomains)}")
+        return all_subdomains
+
     async def enumerate(self) -> Set[str]:
         """Run all subdomain enumeration methods"""
         self.logger.info(f"Starting subdomain enumeration for {self.target_domain}")
         
-        # Run basic enumeration
-        basic_results = await self.run_basic_enumeration()
-        self.logger.info(f"Found {len(basic_results)} subdomains using basic techniques")
-        
-        # Run advanced enumeration if enabled
-        if self.use_advanced:
-            advanced_results = await self.run_advanced_enumeration()
-            self.logger.info(f"Found {len(advanced_results)} subdomains using advanced techniques")
-            
-            # Combine results
-            all_subdomains = basic_results | advanced_results
-            
-            # Run correlation analysis
-            correlation = await self.correlate_subdomains(all_subdomains)
-            potential_targets = correlation.get("potential_new_targets", [])
-            self.logger.info(f"Generated {len(potential_targets)} potential new targets from correlation analysis")
-        else:
-            all_subdomains = basic_results
+        # Run enumeration
+        all_subdomains = await self.run_enumeration(self.target_domain)
         
         # Save final combined results
         final_file = self.output_dir / "final_subdomains.txt"

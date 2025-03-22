@@ -8,6 +8,8 @@ import logging
 from urllib.parse import urljoin, urlparse, parse_qs
 import aiohttp
 from bs4 import BeautifulSoup
+import concurrent.futures
+from datetime import datetime
 
 class ContentDiscovery:
     def __init__(self, subdomains: List[str], output_dir: str = "results"):
@@ -29,8 +31,15 @@ class ContentDiscovery:
         self.tech_output = self.output_dir / "technologies"
         self.js_output = self.output_dir / "js_analysis"
         
+        # Add new output directories for vulnerability scanning
+        self.vuln_output = self.output_dir / "vulnerabilities"
+        self.nuclei_output = self.vuln_output / "nuclei"
+        self.jaeles_output = self.vuln_output / "jaeles"
+        self.osmedeus_output = self.vuln_output / "osmedeus"
+        
         for directory in [self.dirs_output, self.urls_output, self.params_output, 
-                          self.tech_output, self.js_output]:
+                          self.tech_output, self.js_output, self.vuln_output, 
+                          self.nuclei_output, self.jaeles_output, self.osmedeus_output]:
             os.makedirs(directory, exist_ok=True)
 
     async def run_ffuf(self, target: str, wordlist: Optional[str] = None) -> Set[str]:
@@ -454,31 +463,154 @@ class ContentDiscovery:
         
         return analysis
 
-    async def analyze_js_files(self, target: str) -> List[Dict[str, Any]]:
+    async def analyze_js_files(self, target: str) -> Dict[str, Any]:
         """
-        Extract and analyze JavaScript files from a target
+        Comprehensive JavaScript analysis:
+        1. Extract JS files using subjs
+        2. Validate JS URLs using httpx
+        3. Extract endpoints using LinkFinder
+        4. Scan for exposed tokens using nuclei
+        5. Generate wordlist from JS content
         
         Args:
-            target: Target URL
+            target: Target URL or domain
         """
-        results = []
+        results = {
+            "js_files": [],
+            "endpoints": [],
+            "tokens": [],
+            "wordlist": set(),
+            "timestamp": datetime.now().isoformat()
+        }
         
         try:
-            # Extract JS URLs
-            js_urls = await self.extract_js_urls(target)
-            self.logger.info(f"Found {len(js_urls)} JavaScript files on {target}")
+            # Step 1: Extract JS files using subjs
+            js_files_output = self.js_output / f"{target.replace('://', '_')}_js_files.txt"
+            cmd = [
+                "subjs",
+                "-u", target,
+                "-o", str(js_files_output)
+            ]
             
-            # Analyze each JS file
-            for js_url in js_urls:
-                analysis = await self.analyze_js_file(js_url)
-                results.append(analysis)
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            await process.communicate()
             
-            # Save results
-            output_file = self.js_output / f"{target.replace('://', '_').replace('/', '_')}_js_analysis.json"
-            with open(output_file, 'w') as f:
+            if not js_files_output.exists():
+                self.logger.warning(f"No JavaScript files found for {target}")
+                return results
+            
+            # Step 2: Validate JS URLs using httpx
+            valid_js_output = self.js_output / f"{target.replace('://', '_')}_valid_js.txt"
+            cmd = [
+                "httpx",
+                "-l", str(js_files_output),
+                "-mc", "200",
+                "-o", str(valid_js_output),
+                "-silent"
+            ]
+            
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            await process.communicate()
+            
+            # Read valid JS files
+            if valid_js_output.exists():
+                with open(valid_js_output) as f:
+                    results["js_files"] = [line.strip() for line in f if line.strip()]
+            
+            # Step 3: Extract endpoints using LinkFinder
+            for js_url in results["js_files"]:
+                endpoints_output = self.js_output / f"{js_url.replace('://', '_').replace('/', '_')}_endpoints.txt"
+                cmd = [
+                    "python3",
+                    "LinkFinder/linkfinder.py",
+                    "-i", js_url,
+                    "-o", str(endpoints_output),
+                    "-d"
+                ]
+                
+                process = await asyncio.create_subprocess_exec(
+                    *cmd,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE
+                )
+                await process.communicate()
+                
+                if endpoints_output.exists():
+                    with open(endpoints_output) as f:
+                        endpoints = [line.strip() for line in f if line.strip()]
+                        results["endpoints"].extend(endpoints)
+            
+            # Step 4: Scan for exposed tokens using nuclei
+            tokens_output = self.js_output / f"{target.replace('://', '_')}_tokens.json"
+            cmd = [
+                "nuclei",
+                "-l", str(valid_js_output),
+                "-t", "nuclei-templates/exposures/tokens/",
+                "-json",
+                "-o", str(tokens_output),
+                "-silent"
+            ]
+            
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            await process.communicate()
+            
+            if tokens_output.exists():
+                with open(tokens_output) as f:
+                    for line in f:
+                        try:
+                            finding = json.loads(line)
+                            results["tokens"].append(finding)
+                        except json.JSONDecodeError:
+                            continue
+            
+            # Step 5: Generate wordlist from JS content
+            wordlist_output = self.js_output / f"{target.replace('://', '_')}_wordlist.txt"
+            
+            # Download and process each JS file
+            async with aiohttp.ClientSession() as session:
+                for js_url in results["js_files"]:
+                    try:
+                        async with session.get(js_url) as response:
+                            if response.status == 200:
+                                js_content = await response.text()
+                                
+                                # Extract words using regex (basic implementation)
+                                # You might want to create a separate script for more sophisticated parsing
+                                words = set(re.findall(r'\b\w+\b', js_content))
+                                results["wordlist"].update(words)
+                    except Exception as e:
+                        self.logger.error(f"Error downloading {js_url}: {str(e)}")
+            
+            # Save wordlist to file
+            with open(wordlist_output, 'w') as f:
+                for word in sorted(results["wordlist"]):
+                    f.write(f"{word}\n")
+            
+            # Save complete results
+            complete_results = self.js_output / f"{target.replace('://', '_')}_complete_js_analysis.json"
+            with open(complete_results, 'w') as f:
+                # Convert set to list for JSON serialization
+                results["wordlist"] = list(results["wordlist"])
                 json.dump(results, f, indent=2)
+            
+            self.logger.info(f"JavaScript analysis completed for {target}")
+            self.logger.info(f"Found {len(results['js_files'])} JS files, {len(results['endpoints'])} endpoints, "
+                            f"{len(results['tokens'])} potential tokens, and {len(results['wordlist'])} unique words")
+            
         except Exception as e:
-            self.logger.error(f"Error analyzing JS files for {target}: {str(e)}")
+            self.logger.error(f"Error during JavaScript analysis for {target}: {str(e)}")
         
         return results
 
@@ -491,7 +623,10 @@ class ContentDiscovery:
             target: Target domain or URL
         """
         self.logger.info(f"Starting comprehensive content discovery for {target}")
-        results = {"target": target}
+        results = {
+            "target": target,
+            "timestamp": datetime.now().isoformat()
+        }
         
         # Normalize target
         if not target.startswith(('http://', 'https://')):
@@ -531,12 +666,16 @@ class ContentDiscovery:
             # Run JavaScript analysis
             js_task = self.analyze_js_files(https_target)
             
+            # Run vulnerability scans with technology information
+            vuln_task = self.run_vulnerability_scans(https_target, await tech_task)
+            
             # Await all tasks
             dir_results = await asyncio.gather(*dir_tasks)
             endpoint_results = await asyncio.gather(*endpoint_tasks)
             param_results = await param_task
             tech_results = await tech_task
             js_results = await js_task
+            vuln_results = await vuln_task
             
             # Combine directory results
             directories = set()
@@ -573,6 +712,9 @@ class ContentDiscovery:
             
             # Add JavaScript analysis results
             results["js_analysis"] = js_results
+            
+            # Add vulnerability scan results
+            results["vulnerabilities"] = vuln_results
             
             # Save combined results
             output_file = self.output_dir / f"{domain}_content_discovery.json"
@@ -621,4 +763,253 @@ class ContentDiscovery:
         with open(comprehensive_file, 'w') as f:
             json.dump(comprehensive_results, f, indent=2)
         
-        return directories, endpoints, comprehensive_results 
+        return directories, endpoints, comprehensive_results
+
+    async def run_nuclei_scan(self, target: str, tech_info: Dict[str, Any] = None) -> Dict[str, Any]:
+        """
+        Run Nuclei vulnerability scan with technology-specific templates
+        
+        Args:
+            target: Target URL or domain
+            tech_info: Technology information from detect_technologies()
+        """
+        results = {"target": target, "findings": []}
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_file = self.nuclei_output / f"{target.replace('://', '_').replace('/', '_')}_{timestamp}.json"
+        
+        try:
+            # Base templates to always run
+            template_args = [
+                "-t", "nuclei-templates/cves/",
+                "-t", "nuclei-templates/vulnerabilities/",
+                "-t", "nuclei-templates/exposures/"
+            ]
+            
+            # Add technology-specific templates if available
+            if tech_info and "technologies" in tech_info:
+                tech_templates = []
+                
+                # Map technologies to template directories
+                tech_mapping = {
+                    "wordpress": ["cms/wordpress/", "vulnerabilities/wordpress/"],
+                    "joomla": ["cms/joomla/"],
+                    "drupal": ["cms/drupal/"],
+                    "apache": ["http/apache/"],
+                    "nginx": ["http/nginx/"],
+                    "php": ["vulnerabilities/php/"],
+                    "java": ["vulnerabilities/java/"],
+                    "node.js": ["vulnerabilities/nodejs/"],
+                    "python": ["vulnerabilities/python/"],
+                    "laravel": ["vulnerabilities/laravel/"],
+                    "spring": ["vulnerabilities/spring/"]
+                }
+                
+                for tech, templates in tech_mapping.items():
+                    if any(tech.lower() in t.lower() for t in tech_info["technologies"]):
+                        for template in templates:
+                            tech_templates.extend(["-t", f"nuclei-templates/{template}"])
+                
+                template_args.extend(tech_templates)
+            
+            # Construct and run Nuclei command
+            cmd = [
+                "nuclei",
+                "-u", target,
+                "-json",
+                "-o", str(output_file),
+                "-c", "50",
+                "-rate-limit", "150",
+                "-severity", "critical,high,medium",
+                "-metrics",
+                "-silent"
+            ]
+            cmd.extend(template_args)
+            
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            stdout, stderr = await process.communicate()
+            
+            # Parse results
+            if output_file.exists():
+                with open(output_file) as f:
+                    for line in f:
+                        try:
+                            finding = json.loads(line)
+                            results["findings"].append(finding)
+                        except json.JSONDecodeError:
+                            continue
+            
+            self.logger.info(f"Nuclei scan completed for {target}. Found {len(results['findings'])} vulnerabilities")
+            
+        except Exception as e:
+            self.logger.error(f"Error running Nuclei scan on {target}: {str(e)}")
+        
+        return results
+
+    async def run_jaeles_scan(self, target: str, tech_info: Dict[str, Any] = None) -> Dict[str, Any]:
+        """
+        Run Jaeles vulnerability scan
+        
+        Args:
+            target: Target URL or domain
+            tech_info: Technology information from detect_technologies()
+        """
+        results = {"target": target, "findings": []}
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_dir = self.jaeles_output / f"{target.replace('://', '_').replace('/', '_')}_{timestamp}"
+        
+        try:
+            # Create target-specific output directory
+            os.makedirs(output_dir, exist_ok=True)
+            
+            # Base signatures to use
+            signature_args = ["-s", "common", "-s", "cves"]
+            
+            # Add technology-specific signatures if available
+            if tech_info and "technologies" in tech_info:
+                tech_signatures = []
+                tech_mapping = {
+                    "wordpress": ["cms/wordpress"],
+                    "joomla": ["cms/joomla"],
+                    "drupal": ["cms/drupal"],
+                    "apache": ["http/apache"],
+                    "nginx": ["http/nginx"],
+                    "php": ["languages/php"],
+                    "java": ["languages/java"],
+                    "node.js": ["languages/nodejs"]
+                }
+                
+                for tech, sigs in tech_mapping.items():
+                    if any(tech.lower() in t.lower() for t in tech_info["technologies"]):
+                        for sig in sigs:
+                            tech_signatures.extend(["-s", sig])
+                
+                signature_args.extend(tech_signatures)
+            
+            # Construct and run Jaeles command
+            cmd = [
+                "jaeles",
+                "scan",
+                "-u", target,
+                "-o", str(output_dir),
+                "-v",
+                "--chunk", "50",
+                "--timeout", "20",
+                "--retry", "2"
+            ]
+            cmd.extend(signature_args)
+            
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            stdout, stderr = await process.communicate()
+            
+            # Parse results
+            summary_file = output_dir / "jaeles-summary.txt"
+            if summary_file.exists():
+                with open(summary_file) as f:
+                    for line in f:
+                        if line.strip():
+                            results["findings"].append(json.loads(line))
+            
+            self.logger.info(f"Jaeles scan completed for {target}. Found {len(results['findings'])} vulnerabilities")
+            
+        except Exception as e:
+            self.logger.error(f"Error running Jaeles scan on {target}: {str(e)}")
+        
+        return results
+
+    async def run_osmedeus_scan(self, target: str) -> Dict[str, Any]:
+        """
+        Run Osmedeus for comprehensive reconnaissance
+        
+        Args:
+            target: Target domain
+        """
+        results = {"target": target, "status": "failed"}
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        workspace = self.osmedeus_output / f"{target.replace('.', '_')}_{timestamp}"
+        
+        try:
+            # Create workspace directory
+            os.makedirs(workspace, exist_ok=True)
+            
+            # Run Osmedeus scan
+            cmd = [
+                "osmedeus",
+                "scan",
+                "-t", target,
+                "-w", str(workspace),
+                "--format", "json"
+            ]
+            
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            stdout, stderr = await process.communicate()
+            
+            # Check if scan completed successfully
+            if process.returncode == 0:
+                results["status"] = "completed"
+                results["workspace"] = str(workspace)
+                
+                # Try to parse summary report if available
+                summary_file = workspace / "summary.json"
+                if summary_file.exists():
+                    with open(summary_file) as f:
+                        results["summary"] = json.load(f)
+            
+            self.logger.info(f"Osmedeus scan completed for {target}. Results saved to {workspace}")
+            
+        except Exception as e:
+            self.logger.error(f"Error running Osmedeus scan on {target}: {str(e)}")
+        
+        return results
+
+    async def run_vulnerability_scans(self, target: str, tech_info: Dict[str, Any] = None) -> Dict[str, Any]:
+        """
+        Run all vulnerability scans for a target
+        
+        Args:
+            target: Target URL or domain
+            tech_info: Technology information from detect_technologies()
+        """
+        results = {
+            "target": target,
+            "timestamp": datetime.now().isoformat(),
+            "nuclei": None,
+            "jaeles": None,
+            "osmedeus": None
+        }
+        
+        try:
+            # Run Nuclei and Jaeles concurrently
+            nuclei_task = self.run_nuclei_scan(target, tech_info)
+            jaeles_task = self.run_jaeles_scan(target, tech_info)
+            
+            # Wait for both scans to complete
+            results["nuclei"], results["jaeles"] = await asyncio.gather(
+                nuclei_task,
+                jaeles_task
+            )
+            
+            # Run Osmedeus if target is a domain (not a full URL)
+            if not target.startswith(('http://', 'https://')):
+                results["osmedeus"] = await self.run_osmedeus_scan(target)
+            
+            # Save combined results
+            output_file = self.vuln_output / f"{target.replace('://', '_').replace('/', '_')}_vulnerabilities.json"
+            with open(output_file, 'w') as f:
+                json.dump(results, f, indent=2)
+            
+        except Exception as e:
+            self.logger.error(f"Error running vulnerability scans for {target}: {str(e)}")
+        
+        return results 
