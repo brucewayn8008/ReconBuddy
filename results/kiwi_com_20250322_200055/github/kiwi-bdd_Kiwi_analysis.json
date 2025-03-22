@@ -1,0 +1,149 @@
+{
+  "repository": "kiwi-bdd/Kiwi",
+  "sensitive_files": [
+    {
+      "path": ".travis.yml",
+      "url": "https://github.com/kiwi-bdd/Kiwi/blob/master/.travis.yml"
+    }
+  ],
+  "api_keys": {},
+  "repo_metadata": {
+    "name": "Kiwi",
+    "description": "Simple BDD for iOS",
+    "stars": 4134,
+    "forks": 510,
+    "open_issues": 91,
+    "created_at": "2010-06-13T06:17:23Z",
+    "updated_at": "2025-03-04T11:17:51Z",
+    "default_branch": "master"
+  },
+  "contributors": [
+    {
+      "username": "sharplet",
+      "contributions": 98
+    },
+    {
+      "username": "allending",
+      "contributions": 75
+    },
+    {
+      "username": "lukeredpath",
+      "contributions": 73
+    },
+    {
+      "username": "modocache",
+      "contributions": 46
+    },
+    {
+      "username": "stepanhruda",
+      "contributions": 37
+    },
+    {
+      "username": "eraserhd",
+      "contributions": 20
+    },
+    {
+      "username": "ecaselles",
+      "contributions": 18
+    },
+    {
+      "username": "paulz",
+      "contributions": 17
+    },
+    {
+      "username": "csky-ios",
+      "contributions": 12
+    },
+    {
+      "username": "tonyarnold",
+      "contributions": 9
+    },
+    {
+      "username": "ma11hew28",
+      "contributions": 8
+    },
+    {
+      "username": "sgleadow",
+      "contributions": 7
+    },
+    {
+      "username": "jessedc",
+      "contributions": 7
+    },
+    {
+      "username": "bamx23",
+      "contributions": 6
+    },
+    {
+      "username": "MichaelHackett",
+      "contributions": 6
+    },
+    {
+      "username": "roustem",
+      "contributions": 5
+    },
+    {
+      "username": "SergeyKuryanov",
+      "contributions": 5
+    },
+    {
+      "username": "tibr",
+      "contributions": 5
+    },
+    {
+      "username": "orta",
+      "contributions": 5
+    },
+    {
+      "username": "martica",
+      "contributions": 4
+    },
+    {
+      "username": "tvon",
+      "contributions": 4
+    },
+    {
+      "username": "jdewind",
+      "contributions": 4
+    },
+    {
+      "username": "jerrymarino",
+      "contributions": 4
+    },
+    {
+      "username": "chrisdevereux",
+      "contributions": 4
+    },
+    {
+      "username": "camdez",
+      "contributions": 4
+    },
+    {
+      "username": "blakewatters",
+      "contributions": 4
+    },
+    {
+      "username": "wezm",
+      "contributions": 3
+    },
+    {
+      "username": "yas375",
+      "contributions": 3
+    },
+    {
+      "username": "spenrose",
+      "contributions": 3
+    },
+    {
+      "username": "pfransenadb",
+      "contributions": 3
+    }
+  ],
+  "commit_frequency": {
+    "2020-02": 2,
+    "2020-01": 26,
+    "2015-08": 1,
+    "2019-08": 1
+  },
+  "security_issues": []
+}

@@ -1,0 +1,313 @@
+{
+  "repository": "ansh/jiffyreader.com",
+  "sensitive_files": [
+    {
+      "path": ".github/FUNDING.yml",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/.github/FUNDING.yml"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/.github/dependabot.yml"
+    },
+    {
+      "path": ".github/workflows/publish-development-release-plasmo.yml",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/.github/workflows/publish-development-release-plasmo.yml"
+    },
+    {
+      "path": ".github/workflows/publish-release.yml",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/.github/workflows/publish-release.yml"
+    },
+    {
+      "path": ".github/workflows/run-test-plasmo.yml",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/.github/workflows/run-test-plasmo.yml"
+    },
+    {
+      "path": ".github/workflows/submit.yml",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/.github/workflows/submit.yml"
+    },
+    {
+      "path": ".versionrc.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/.versionrc.json"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/.vscode/settings.json"
+    },
+    {
+      "path": ".vscode/tasks.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/.vscode/tasks.json"
+    },
+    {
+      "path": "assets/_locales/af/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/af/messages.json"
+    },
+    {
+      "path": "assets/_locales/ar/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/ar/messages.json"
+    },
+    {
+      "path": "assets/_locales/ca/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/ca/messages.json"
+    },
+    {
+      "path": "assets/_locales/cy/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/cy/messages.json"
+    },
+    {
+      "path": "assets/_locales/da/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/da/messages.json"
+    },
+    {
+      "path": "assets/_locales/de/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/de/messages.json"
+    },
+    {
+      "path": "assets/_locales/el/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/el/messages.json"
+    },
+    {
+      "path": "assets/_locales/en/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/en/messages.json"
+    },
+    {
+      "path": "assets/_locales/es/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/es/messages.json"
+    },
+    {
+      "path": "assets/_locales/et/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/et/messages.json"
+    },
+    {
+      "path": "assets/_locales/fa/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/fa/messages.json"
+    },
+    {
+      "path": "assets/_locales/fr/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/fr/messages.json"
+    },
+    {
+      "path": "assets/_locales/he/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/he/messages.json"
+    },
+    {
+      "path": "assets/_locales/hi/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/hi/messages.json"
+    },
+    {
+      "path": "assets/_locales/hu/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/hu/messages.json"
+    },
+    {
+      "path": "assets/_locales/id/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/id/messages.json"
+    },
+    {
+      "path": "assets/_locales/it/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/it/messages.json"
+    },
+    {
+      "path": "assets/_locales/ja/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/ja/messages.json"
+    },
+    {
+      "path": "assets/_locales/ko/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/ko/messages.json"
+    },
+    {
+      "path": "assets/_locales/ms/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/ms/messages.json"
+    },
+    {
+      "path": "assets/_locales/pt/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/pt/messages.json"
+    },
+    {
+      "path": "assets/_locales/ru/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/ru/messages.json"
+    },
+    {
+      "path": "assets/_locales/sv/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/sv/messages.json"
+    },
+    {
+      "path": "assets/_locales/sw/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/sw/messages.json"
+    },
+    {
+      "path": "assets/_locales/th/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/th/messages.json"
+    },
+    {
+      "path": "assets/_locales/tr/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/tr/messages.json"
+    },
+    {
+      "path": "assets/_locales/uk/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/uk/messages.json"
+    },
+    {
+      "path": "assets/_locales/ur/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/ur/messages.json"
+    },
+    {
+      "path": "assets/_locales/zh-CN/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/zh-CN/messages.json"
+    },
+    {
+      "path": "assets/_locales/zh-Hans/messages.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/assets/_locales/zh-Hans/messages.json"
+    },
+    {
+      "path": "package-lock.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/package-lock.json"
+    },
+    {
+      "path": "package.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/package.json"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/pnpm-lock.yaml"
+    },
+    {
+      "path": "tsconfig.json",
+      "url": "https://github.com/ansh/jiffyreader.com/blob/master/tsconfig.json"
+    }
+  ],
+  "api_keys": {
+    "package-lock.json": {
+      "generic_api_key": [
+        "auth-library-8.6.0.tgz",
+        "token-6.1.2.tgz",
+        "api-4.3.0.tgz",
+        "api-3.2.1.tgz",
+        "key-3.1.1.tgz",
+        "auth-library-8.6.0.tgz",
+        "token-6.1.2.tgz",
+        "api-4.3.0.tgz",
+        "api-3.2.1.tgz",
+        "key-3.1.1.tgz"
+      ]
+    },
+    "pnpm-lock.yaml": {
+      "generic_api_key": [
+        "api-build-utils",
+        "api-build-utils",
+        "api-build-utils"
+      ]
+    }
+  },
+  "repo_metadata": {
+    "name": "jiffyreader.com",
+    "description": "A Browser Extension for faster reading on ANY website!",
+    "stars": 3915,
+    "forks": 198,
+    "open_issues": 27,
+    "created_at": "2022-05-20T18:20:29Z",
+    "updated_at": "2025-03-22T09:33:40Z",
+    "default_branch": "master"
+  },
+  "contributors": [
+    {
+      "username": "asieduernest12",
+      "contributions": 564
+    },
+    {
+      "username": "paxelpixel",
+      "contributions": 45
+    },
+    {
+      "username": "ansh",
+      "contributions": 42
+    },
+    {
+      "username": "X140Yu",
+      "contributions": 31
+    },
+    {
+      "username": "dependabot[bot]",
+      "contributions": 7
+    },
+    {
+      "username": "mellowtel",
+      "contributions": 5
+    },
+    {
+      "username": "milkyomo",
+      "contributions": 5
+    },
+    {
+      "username": "FahimFBA",
+      "contributions": 3
+    },
+    {
+      "username": "TommyHolmberg",
+      "contributions": 3
+    },
+    {
+      "username": "iskandarzhilmi",
+      "contributions": 3
+    },
+    {
+      "username": "MegaBluejay",
+      "contributions": 2
+    },
+    {
+      "username": "dingxuanyao",
+      "contributions": 2
+    },
+    {
+      "username": "meetbryce",
+      "contributions": 1
+    },
+    {
+      "username": "Cveinnt",
+      "contributions": 1
+    },
+    {
+      "username": "ParadoxialN3",
+      "contributions": 1
+    },
+    {
+      "username": "mehbubhussain",
+      "contributions": 1
+    },
+    {
+      "username": "Kosrotoff",
+      "contributions": 1
+    },
+    {
+      "username": "mjholub",
+      "contributions": 1
+    },
+    {
+      "username": "myQwil",
+      "contributions": 1
+    },
+    {
+      "username": "a1eaiactaest",
+      "contributions": 1
+    },
+    {
+      "username": "rezwan-hossain",
+      "contributions": 1
+    },
+    {
+      "username": "emmanuelmoon",
+      "contributions": 1
+    },
+    {
+      "username": "fredwbaker",
+      "contributions": 1
+    },
+    {
+      "username": "videah",
+      "contributions": 1
+    }
+  ],
+  "commit_frequency": {
+    "2025-02": 23,
+    "2025-01": 7
+  },
+  "security_issues": []
+}

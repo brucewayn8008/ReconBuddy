@@ -1,0 +1,290 @@
+{
+  "repository": "gentilkiwi/mimikatz",
+  "sensitive_files": [
+    {
+      "path": "appveyor.yml",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/appveyor.yml"
+    },
+    {
+      "path": "kiwi_passwords.yar",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/kiwi_passwords.yar"
+    },
+    {
+      "path": "mimikatz/modules/kuhl_m_token.c",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/mimikatz/modules/kuhl_m_token.c"
+    },
+    {
+      "path": "mimikatz/modules/kuhl_m_token.h",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/mimikatz/modules/kuhl_m_token.h"
+    },
+    {
+      "path": "mimilib/kcredentialprovider.c",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/mimilib/kcredentialprovider.c"
+    },
+    {
+      "path": "mimilib/kcredentialprovider.h",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/mimilib/kcredentialprovider.h"
+    },
+    {
+      "path": "mimilib/sekurlsadbg/kull_m_rpc_ms-credentialkeys.c",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/mimilib/sekurlsadbg/kull_m_rpc_ms-credentialkeys.c"
+    },
+    {
+      "path": "mimilib/sekurlsadbg/kull_m_rpc_ms-credentialkeys.h",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/mimilib/sekurlsadbg/kull_m_rpc_ms-credentialkeys.h"
+    },
+    {
+      "path": "modules/kull_m_token.c",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/modules/kull_m_token.c"
+    },
+    {
+      "path": "modules/kull_m_token.h",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/modules/kull_m_token.h"
+    },
+    {
+      "path": "modules/rpc/kull_m_rpc_ms-credentialkeys.c",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/modules/rpc/kull_m_rpc_ms-credentialkeys.c"
+    },
+    {
+      "path": "modules/rpc/kull_m_rpc_ms-credentialkeys.h",
+      "url": "https://github.com/gentilkiwi/mimikatz/blob/master/modules/rpc/kull_m_rpc_ms-credentialkeys.h"
+    }
+  ],
+  "api_keys": {
+    "mimikatz/modules/kuhl_m_token.c": {
+      "generic_api_key": [
+        "token_displayAccount",
+        "token_displayAccount",
+        "token_list_or_elevate",
+        "token_list_or_elevate",
+        "token_list_or_elevate",
+        "token_list_or_elevate",
+        "TOKEN_ELEVATE_DATA",
+        "token_getNameDomainFromSID",
+        "token_getNameDomainFromSID",
+        "token_getTokensUnique",
+        "token_list_or_elevate_callback",
+        "token_getTokens",
+        "token_list_or_elevate_callback",
+        "token_displayAccount_sids",
+        "token_getNameDomainFromSID",
+        "TOKEN_IMPERSONATION_LEVEL",
+        "token_displayAccount",
+        "TOKEN_STATISTICS",
+        "TOKEN_ELEVATION_TYPE",
+        "TOKEN_GROUPS_AND_PRIVILEGES",
+        "TOKEN_STATISTICS",
+        "TOKEN_ELEVATION_TYPE",
+        "token_getNameDomainFromToken",
+        "TOKEN_IMPERSONATION_LEVEL",
+        "TOKEN_GROUPS_AND_PRIVILEGES",
+        "token_displayAccount_sids",
+        "token_displayAccount_sids",
+        "token_list_or_elevate_callback",
+        "TOKEN_STATISTICS",
+        "TOKEN_ELEVATE_DATA",
+        "TOKEN_ELEVATE_DATA",
+        "TOKEN_STATISTICS",
+        "token_getNameDomainFromToken",
+        "token_getUserFromToken",
+        "token_CheckTokenMembership",
+        "token_displayAccount",
+        "TOKEN_IMPERSONATE",
+        "TOKEN_ASSIGN_PRIMARY",
+        "TOKEN_DUPLICATE",
+        "TOKEN_ADJUST_DEFAULT",
+        "TOKEN_ADJUST_SESSIONID"
+      ]
+    },
+    "mimikatz/modules/kuhl_m_token.h": {
+      "generic_api_key": [
+        "TOKEN_ELEVATE_DATA_TYPE_FILTER",
+        "TOKEN_ELEVATE_DATA_TYPE_FILTER",
+        "TOKEN_ELEVATE_DATA_TYPE_FILTER",
+        "TOKEN_ELEVATE_DATA",
+        "TOKEN_ELEVATE_DATA_TYPE_FILTER",
+        "TOKEN_ELEVATE_DATA",
+        "TOKEN_ELEVATE_DATA",
+        "token_displayAccount_sids",
+        "token_displayAccount",
+        "token_list_or_elevate",
+        "token_list_or_elevate_callback"
+      ]
+    },
+    "mimilib/kcredentialprovider.c": {
+      "generic_api_key": [
+        "KEY_LOCAL_MACHINE",
+        "KEY_CLASSES_ROOT",
+        "KEY_CLASSES_ROOT",
+        "KEY_LOCAL_MACHINE",
+        "KEY_CLASSES_ROOT",
+        "KEY_CLASSES_ROOT",
+        "KEY_LOCAL_MACHINE",
+        "KEY_CLASSES_ROOT",
+        "KEY_LOCAL_MACHINE",
+        "KEY_CLASSES_ROOT"
+      ]
+    },
+    "mimilib/sekurlsadbg/kull_m_rpc_ms-credentialkeys.c": {
+      "generic_api_key": [
+        "CLIENT_INTERFACE",
+        "CLIENT_INTERFACE",
+        "CLIENT_INTERFACE",
+        "CLIENT_INTERFACE"
+      ]
+    },
+    "mimilib/sekurlsadbg/kull_m_rpc_ms-credentialkeys.h": {
+      "generic_api_key": [
+        "KEY_TYPE_NTLM",
+        "KEY_TYPE_SHA1",
+        "KEY_TYPE_ROOTKEY",
+        "KEY_TYPE_DPAPI_PROTECTION"
+      ]
+    },
+    "modules/kull_m_token.c": {
+      "generic_api_key": [
+        "token_getNameDomainFromToken",
+        "token_getNameDomainFromSID",
+        "token_CheckTokenMembership",
+        "token_getSidNameUse",
+        "token_getNameDomainFromSID",
+        "token_getSidDomainFromName",
+        "token_getTokens",
+        "TOKEN_ENUM_CALLBACK",
+        "TOKEN_ENUM_DATA",
+        "token_getTokens_process_callback",
+        "token_getTokens_handles_callback",
+        "TOKEN_DUPLICATE",
+        "token_getTokensUnique",
+        "TOKEN_ENUM_CALLBACK",
+        "token_getTokens",
+        "token_getTokensUnique_callback",
+        "token_getTokensUnique_callback",
+        "token_getTokens_process_callback",
+        "TOKEN_DUPLICATE",
+        "TOKEN_ENUM_DATA",
+        "TOKEN_ENUM_DATA",
+        "TOKEN_ENUM_DATA",
+        "token_getTokens_handles_callback",
+        "TOKEN_ENUM_DATA",
+        "TOKEN_ENUM_DATA",
+        "TOKEN_ENUM_DATA",
+        "token_getUserFromToken",
+        "token_getSidFromToken",
+        "token_getUserFromToken",
+        "token_getCurrentSid",
+        "token_getSidFromToken",
+        "token_isLocalAccount"
+      ]
+    },
+    "modules/kull_m_token.h": {
+      "generic_api_key": [
+        "TOKEN_ENUM_CALLBACK",
+        "TOKEN_ENUM_DATA",
+        "TOKEN_ENUM_CALLBACK",
+        "TOKEN_ENUM_DATA",
+        "TOKEN_ENUM_DATA",
+        "token_getTokens",
+        "TOKEN_ENUM_CALLBACK",
+        "token_getTokensUnique",
+        "TOKEN_ENUM_CALLBACK",
+        "token_getTokensUnique_callback",
+        "token_getTokens_process_callback",
+        "token_getTokens_handles_callback",
+        "token_getNameDomainFromToken",
+        "token_CheckTokenMembership",
+        "token_getSidNameUse",
+        "token_getNameDomainFromSID",
+        "token_getSidDomainFromName",
+        "token_getUserFromToken",
+        "token_getSidFromToken",
+        "token_getCurrentSid",
+        "token_isLocalAccount"
+      ]
+    },
+    "modules/rpc/kull_m_rpc_ms-credentialkeys.c": {
+      "generic_api_key": [
+        "CLIENT_INTERFACE",
+        "CLIENT_INTERFACE"
+      ]
+    },
+    "modules/rpc/kull_m_rpc_ms-credentialkeys.h": {
+      "generic_api_key": [
+        "KEY_TYPE_NTLM",
+        "KEY_TYPE_SHA1",
+        "KEY_TYPE_ROOTKEY",
+        "KEY_TYPE_DPAPI_PROTECTION",
+        "KEY_PACKAGE_NAME",
+        "KEY_PACKAGE_ID",
+        "KEY_ROOT_KEY_ITERATIONS",
+        "KEY_SOURCE_TYPE",
+        "KEY_SOURCE_TYPE",
+        "KEY_SOURCE_TYPE",
+        "KEY_SOURCE_TYPE",
+        "KEY_ARRAY_STORAGE",
+        "KEY_ARRAY_STORAGE",
+        "KEY_ARRAY_STORAGE"
+      ]
+    }
+  },
+  "repo_metadata": {
+    "name": "mimikatz",
+    "description": "A little tool to play with Windows security",
+    "stars": 19925,
+    "forks": 3820,
+    "open_issues": 178,
+    "created_at": "2014-04-06T18:30:02Z",
+    "updated_at": "2025-03-22T10:54:06Z",
+    "default_branch": "master"
+  },
+  "contributors": [
+    {
+      "username": "gentilkiwi",
+      "contributions": 331
+    },
+    {
+      "username": "hubert3",
+      "contributions": 7
+    },
+    {
+      "username": "vletoux",
+      "contributions": 2
+    },
+    {
+      "username": "chunhualiu",
+      "contributions": 1
+    },
+    {
+      "username": "matrix",
+      "contributions": 1
+    },
+    {
+      "username": "timhir",
+      "contributions": 1
+    },
+    {
+      "username": "zhangyoufu",
+      "contributions": 1
+    },
+    {
+      "username": "SLiNv",
+      "contributions": 1
+    },
+    {
+      "username": "brandoncasaba",
+      "contributions": 1
+    }
+  ],
+  "commit_frequency": {
+    "2024-01": 2,
+    "2023-11": 1,
+    "2023-08": 1,
+    "2023-07": 6,
+    "2022-09": 4,
+    "2022-07": 7,
+    "2022-04": 1,
+    "2021-09": 5,
+    "2021-08": 3
+  },
+  "security_issues": []
+}

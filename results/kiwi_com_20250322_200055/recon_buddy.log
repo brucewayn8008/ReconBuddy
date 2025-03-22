@@ -1,0 +1,55 @@
+2025-03-22 20:00:55,455 - __main__ - DEBUG - ReconBuddy instance created successfully
+2025-03-22 20:00:55,456 - __main__ - DEBUG - Starting ReconBuddy run...
+2025-03-22 20:00:55,457 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-22 20:00:55,457 - ReconBuddy - INFO - Starting ReconBuddy reconnaissance for kiwi.com
+2025-03-22 20:00:55,458 - ReconBuddy - INFO - Starting asset discovery...
+2025-03-22 20:00:55,460 - AssetDiscovery - INFO - Starting asset discovery for kiwi.com
+2025-03-22 20:00:59,603 - AssetDiscovery - INFO - Asset discovery completed for kiwi.com
+2025-03-22 20:00:59,604 - ReconBuddy - INFO - Asset discovery completed. Found 0 domains and 0 IP ranges
+2025-03-22 20:00:59,605 - ReconBuddy - INFO - Starting GitHub reconnaissance...
+2025-03-22 20:00:59,608 - GitHubRecon - INFO - Starting GitHub reconnaissance for kiwi
+2025-03-22 20:01:27,883 - GitHubRecon - ERROR - GitHub API error: 403 - {"message":"API rate limit exceeded for user ID 175154076. If you reach out to GitHub Support for help, please include the request ID 2DC0:17611:E7FB1:13B908:67DEC9C2 and timestamp 2025-03-22 14:31:30 UTC.","documentation_url":"https://docs.github.com/rest/overview/rate-limits-for-the-rest-api","status":"403"}
+2025-03-22 20:01:30,310 - GitHubRecon - ERROR - GitHub API error: 403 - {"message":"API rate limit exceeded for user ID 175154076. If you reach out to GitHub Support for help, please include the request ID 3419:4B3E8:4BFA35:6A51FB:67DEC9C4 and timestamp 2025-03-22 14:31:32 UTC.","documentation_url":"https://docs.github.com/rest/overview/rate-limits-for-the-rest-api","status":"403"}
+2025-03-22 20:01:32,700 - GitHubRecon - ERROR - GitHub API error: 403 - {"message":"API rate limit exceeded for user ID 175154076. If you reach out to GitHub Support for help, please include the request ID 30E8:43D0D:3B9242:54A939:67DEC9C7 and timestamp 2025-03-22 14:31:35 UTC.","documentation_url":"https://docs.github.com/rest/overview/rate-limits-for-the-rest-api","status":"403"}
+2025-03-22 20:01:41,124 - GitHubRecon - ERROR - GitHub API error: 403 - {"message":"You are not authorized to read code scanning alerts.","documentation_url":"https://docs.github.com/rest/code-scanning/code-scanning#list-code-scanning-alerts-for-a-repository","status":"403"}
+2025-03-22 20:01:45,371 - GitHubRecon - ERROR - GitHub API error: 403 - {"message":"You are not authorized to read code scanning alerts.","documentation_url":"https://docs.github.com/rest/code-scanning/code-scanning#list-code-scanning-alerts-for-a-repository","status":"403"}
+2025-03-22 20:01:50,257 - GitHubRecon - ERROR - GitHub API error: 403 - {"message":"You are not authorized to read code scanning alerts.","documentation_url":"https://docs.github.com/rest/code-scanning/code-scanning#list-code-scanning-alerts-for-a-repository","status":"403"}
+2025-03-22 20:02:08,776 - GitHubRecon - ERROR - GitHub API error: 403 - {"message":"You are not authorized to read code scanning alerts.","documentation_url":"https://docs.github.com/rest/code-scanning/code-scanning#list-code-scanning-alerts-for-a-repository","status":"403"}
+2025-03-22 20:02:15,725 - GitHubRecon - ERROR - GitHub API error: 403 - {"message":"You are not authorized to read code scanning alerts.","documentation_url":"https://docs.github.com/rest/code-scanning/code-scanning#list-code-scanning-alerts-for-a-repository","status":"403"}
+2025-03-22 20:02:17,868 - GitHubRecon - INFO - GitHub reconnaissance completed for kiwi
+2025-03-22 20:02:17,868 - ReconBuddy - INFO - GitHub reconnaissance completed. Found 100 repositories and 0 sensitive information items
+2025-03-22 20:02:17,872 - ReconRunner - INFO - Starting reconnaissance for kiwi.com
+2025-03-22 20:02:17,873 - ReconRunner - INFO - Starting subdomain enumeration...
+2025-03-22 20:02:17,884 - SubdomainEnumerator - INFO - Starting subdomain enumeration for kiwi.com
+2025-03-22 20:02:17,885 - SubdomainEnumerator - INFO - Running passive enumeration...
+2025-03-22 20:02:17,885 - SubdomainEnumerator - INFO - Running basic subdomain enumeration...
+2025-03-22 20:03:04,860 - SubdomainEnumerator - INFO - Running bruteforce enumeration...
+2025-03-22 20:03:04,861 - SubdomainEnumerator - WARNING - Wordlist not found: wordlists/subdomains-top1million.txt
+2025-03-22 20:03:04,863 - SubdomainEnumerator - WARNING - Wordlist not found: wordlists/dns-common.txt
+2025-03-22 20:03:04,864 - SubdomainEnumerator - WARNING - Wordlist not found: wordlists/deepmagic.com-prefixes-top500.txt
+2025-03-22 20:03:04,868 - SubdomainEnumerator - INFO - Bruteforce completed. Found 0 subdomains
+2025-03-22 20:03:04,869 - SubdomainEnumerator - INFO - Running permutation scanning...
+2025-03-22 20:03:04,870 - SubdomainEnumerator - INFO - Starting permutation scanning...
+2025-03-22 20:03:05,050 - SubdomainEnumerator - INFO - Generated 0 permutations
+2025-03-22 20:03:05,055 - SubdomainEnumerator - INFO - Found 0 valid permuted subdomains
+2025-03-22 20:03:05,059 - SubdomainEnumerator - INFO - Total unique subdomains found: 0
+2025-03-22 20:03:05,060 - SubdomainEnumerator - INFO - - Passive: 0
+2025-03-22 20:03:05,060 - SubdomainEnumerator - INFO - - Bruteforce: 0
+2025-03-22 20:03:05,061 - SubdomainEnumerator - INFO - - Permutation: 0
+2025-03-22 20:03:05,067 - SubdomainEnumerator - INFO - Verifying active subdomains with httpx...
+2025-03-22 20:03:05,439 - SubdomainEnumerator - ERROR - Error running httpx: Usage: httpx [OPTIONS] URL
+
+Error: No such option: -l
+2025-03-22 20:03:05,445 - SubdomainEnumerator - INFO - Total subdomains: 0, Active subdomains: 0
+2025-03-22 20:03:05,445 - ReconRunner - INFO - Found 0 subdomains
+2025-03-22 20:03:05,446 - ReconRunner - INFO - Starting content discovery...
+2025-03-22 20:03:05,483 - ReconRunner - INFO - Found 0 directories and 0 endpoints
+2025-03-22 20:03:05,484 - ReconRunner - INFO - Starting DNS analysis...
+2025-03-22 20:03:05,486 - ReconRunner - INFO - Resolved 0 IP addresses
+2025-03-22 20:03:05,487 - ReconRunner - INFO - Performed reverse DNS lookups for 0 IPs
+2025-03-22 20:03:05,728 - ReconRunner - WARNING - Zone transfer successful for kiwi.com! Found 1 records
+2025-03-22 20:03:11,826 - ReconRunner - INFO - Found 335 subdomains from certificate transparency logs
+2025-03-22 20:03:11,827 - ReconRunner - INFO - Generated 18 subdomain permutations
+2025-03-22 20:03:11,828 - ReconRunner - INFO - Starting network scanning...
+2025-03-22 20:03:11,831 - ReconRunner - INFO - Completed port scanning for 0 hosts
+2025-03-22 20:03:11,832 - ReconRunner - INFO - Detected services on 0 hosts

@@ -1,0 +1,13 @@
+2025-03-22 19:58:53,841 - __main__ - DEBUG - ReconBuddy instance created successfully
+2025-03-22 19:58:53,841 - __main__ - DEBUG - Starting ReconBuddy run...
+2025-03-22 19:58:53,842 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-22 19:58:53,843 - ReconBuddy - INFO - Starting ReconBuddy reconnaissance for kiwi.com
+2025-03-22 19:58:53,844 - ReconBuddy - INFO - Starting asset discovery...
+2025-03-22 19:58:53,846 - AssetDiscovery - INFO - Starting asset discovery for kiwi.com
+2025-03-22 19:58:57,813 - AssetDiscovery - INFO - Asset discovery completed for kiwi.com
+2025-03-22 19:58:57,814 - ReconBuddy - INFO - Asset discovery completed. Found 0 domains and 0 IP ranges
+2025-03-22 19:58:57,814 - ReconBuddy - INFO - Starting GitHub reconnaissance...
+2025-03-22 19:58:57,829 - ReconBuddy - WARNING - No GitHub token provided. GitHub recon will be limited.
+2025-03-22 19:58:57,831 - ReconBuddy - ERROR - Error during reconnaissance: 'GitHubRecon' object has no attribute 'run_recon'
+2025-03-22 19:58:57,833 - __main__ - ERROR - Error during execution: 'GitHubRecon' object has no attribute 'run_recon'
+2025-03-22 19:58:57,834 - __main__ - ERROR - Main function failed: 'GitHubRecon' object has no attribute 'run_recon'

@@ -1,0 +1,68 @@
+{
+  "repository": "fishjar/kiss-translator",
+  "sensitive_files": [
+    {
+      "path": ".env",
+      "url": "https://github.com/fishjar/kiss-translator/blob/master/.env"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "url": "https://github.com/fishjar/kiss-translator/blob/master/.github/workflows/release.yml"
+    },
+    {
+      "path": "package.json",
+      "url": "https://github.com/fishjar/kiss-translator/blob/master/package.json"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "url": "https://github.com/fishjar/kiss-translator/blob/master/pnpm-lock.yaml"
+    },
+    {
+      "path": "public/_locales/en/messages.json",
+      "url": "https://github.com/fishjar/kiss-translator/blob/master/public/_locales/en/messages.json"
+    },
+    {
+      "path": "public/_locales/zh_CN/messages.json",
+      "url": "https://github.com/fishjar/kiss-translator/blob/master/public/_locales/zh_CN/messages.json"
+    },
+    {
+      "path": "public/manifest.firefox.json",
+      "url": "https://github.com/fishjar/kiss-translator/blob/master/public/manifest.firefox.json"
+    },
+    {
+      "path": "public/manifest.json",
+      "url": "https://github.com/fishjar/kiss-translator/blob/master/public/manifest.json"
+    }
+  ],
+  "api_keys": {
+    "pnpm-lock.yaml": {
+      "generic_api_key": [
+        "api-fallback",
+        "api-fallback",
+        "api-fallback",
+        "api-fallback"
+      ]
+    }
+  },
+  "repo_metadata": {
+    "name": "kiss-translator",
+    "description": "A simple, open source bilingual translation extension & Greasemonkey script (\u4e00\u4e2a\u7b80\u7ea6\u3001\u5f00\u6e90\u7684 \u53cc\u8bed\u5bf9\u7167\u7ffb\u8bd1\u6269\u5c55 & \u6cb9\u7334\u811a\u672c)",
+    "stars": 3493,
+    "forks": 138,
+    "open_issues": 87,
+    "created_at": "2023-07-18T07:20:49Z",
+    "updated_at": "2025-03-22T11:57:54Z",
+    "default_branch": "master"
+  },
+  "contributors": [
+    {
+      "username": "fishjar",
+      "contributions": 235
+    }
+  ],
+  "commit_frequency": {
+    "2024-05": 13,
+    "2024-04": 17
+  },
+  "security_issues": []
+}

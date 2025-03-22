@@ -102,31 +102,42 @@ class ReconBuddySetup:
                 "libxslt1-dev", "ruby-full", "zlib1g-dev", "nodejs", "npm", "docker.io"
             ]
 
-            # Try to install core packages
-            try:
-                subprocess.run(["sudo", "apt-get", "install", "-y"] + core_packages, check=True)
-            except subprocess.CalledProcessError as e:
-                logger.error(f"Failed to install core packages: {str(e)}")
-                raise
+            # Filter out already installed packages
+            to_install = []
+            for pkg in core_packages:
+                if not self._check_tool_installed(pkg.split('-')[0]):  # Handle packages like python3-pip
+                    to_install.append(pkg)
 
-            # Try to install Chromium (different package names on different distros)
-            chromium_packages = ["chromium", "chromium-browser"]
-            chromium_installed = False
-            
-            for pkg in chromium_packages:
+            if to_install:
                 try:
-                    subprocess.run(["sudo", "apt-get", "install", "-y", pkg], check=True)
-                    chromium_installed = True
-                    logger.info(f"Successfully installed {pkg}")
-                    break
-                except subprocess.CalledProcessError:
-                    logger.warning(f"Failed to install {pkg}, trying alternative...")
-                    continue
+                    subprocess.run(["sudo", "apt-get", "install", "-y"] + to_install, check=True)
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Failed to install core packages: {str(e)}")
+                    raise
+            else:
+                logger.info("All core packages are already installed")
 
-            if not chromium_installed:
-                logger.warning("Could not install Chromium. Please install it manually.")
-                print(f"{Fore.YELLOW}⚠️ Warning: Could not install Chromium. You may need to install it manually.{Style.RESET_ALL}")
-            
+            # Try to install Chromium if not already installed
+            if not self._check_tool_installed("chromium") and not self._check_tool_installed("chromium-browser"):
+                chromium_packages = ["chromium", "chromium-browser"]
+                chromium_installed = False
+                
+                for pkg in chromium_packages:
+                    try:
+                        subprocess.run(["sudo", "apt-get", "install", "-y", pkg], check=True)
+                        chromium_installed = True
+                        logger.info(f"Successfully installed {pkg}")
+                        break
+                    except subprocess.CalledProcessError:
+                        logger.warning(f"Failed to install {pkg}, trying alternative...")
+                        continue
+
+                if not chromium_installed:
+                    logger.warning("Could not install Chromium. Please install it manually.")
+                    print(f"{Fore.YELLOW}⚠️ Warning: Could not install Chromium. You may need to install it manually.{Style.RESET_ALL}")
+            else:
+                logger.info("Chromium is already installed")
+
         elif self.system == "darwin":  # macOS
             try:
                 subprocess.run(["brew", "update"], check=True)
@@ -181,8 +192,23 @@ class ReconBuddySetup:
 
     def _install_go(self):
         """Install or update Go"""
-        print("📦 Installing/Updating Go...")
+        print("📦 Checking Go installation...")
         
+        try:
+            # Check if Go is already installed and get version
+            go_version = subprocess.run(
+                ["go", "version"], 
+                capture_output=True, 
+                text=True
+            ).stdout.strip()
+            
+            if go_version:
+                logger.info(f"Go is already installed: {go_version}")
+                return
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            logger.info("Go not found, installing...")
+        
+        print("Installing Go...")
         if self.system == "linux":
             if self.is_arm:
                 go_url = "https://go.dev/dl/go1.21.0.linux-arm64.tar.gz"
@@ -200,6 +226,27 @@ class ReconBuddySetup:
         subprocess.run(["sudo", "rm", "-rf", "/usr/local/go"], check=True)
         subprocess.run(["sudo", "tar", "-C", "/usr/local", "-xzf", "/tmp/go.tar.gz"], check=True)
         os.environ["PATH"] = f"/usr/local/go/bin:{os.environ['PATH']}"
+
+    def _check_tool_installed(self, tool: str) -> bool:
+        """Check if a tool is already installed"""
+        try:
+            subprocess.run(["which", tool], capture_output=True, check=True)
+            return True
+        except subprocess.CalledProcessError:
+            return False
+
+    def _check_go_tool_installed(self, tool_path: str) -> bool:
+        """Check if a Go tool is already installed"""
+        try:
+            gopath = Path.home() / "go"
+            tool_name = tool_path.split('/')[-1].split('@')[0]
+            if self.system == "windows":
+                tool_binary = gopath / "bin" / f"{tool_name}.exe"
+            else:
+                tool_binary = gopath / "bin" / tool_name
+            return tool_binary.exists()
+        except Exception:
+            return False
 
     def _install_security_tools(self):
         """Install required security tools"""
@@ -265,12 +312,16 @@ class ReconBuddySetup:
         os.environ["GOPATH"] = str(Path.home() / "go")
         os.environ["PATH"] = f"{os.environ['GOPATH']}/bin:{os.environ['PATH']}"
         
-        for tool in tqdm(go_tools, desc="Installing Go tools"):
-            try:
-                subprocess.run(["go", "install", "-v", tool], check=True)
-            except subprocess.CalledProcessError as e:
-                logger.warning(f"Failed to install {tool}: {str(e)}")
-                continue
+        # Install only missing Go tools
+        for tool in tqdm(go_tools, desc="Checking/Installing Go tools"):
+            if not self._check_go_tool_installed(tool):
+                try:
+                    subprocess.run(["go", "install", "-v", tool], check=True)
+                except subprocess.CalledProcessError as e:
+                    logger.warning(f"Failed to install {tool}: {str(e)}")
+                    continue
+            else:
+                logger.debug(f"Tool already installed: {tool}")
         
         # Git repositories - Enhanced with more nuclei templates
         git_repos = {
@@ -284,10 +335,7 @@ class ReconBuddySetup:
             "nuclei-templates-collection": "https://github.com/emadshanab/Nuclei-Templates-Collection.git",
             
             # Additional template repositories
-            "custom-nuclei-templates": {
-                "url": "https://github.com/pikpikcu/nuclei-templates.git",
-                "dir": "nuclei-templates/custom/pikpikcu"
-            },
+            
             "kenzer-templates": {
                 "url": "https://github.com/ARPSyndicate/kenzer-templates.git",
                 "dir": "nuclei-templates/custom/kenzer"
@@ -334,20 +382,18 @@ class ReconBuddySetup:
         nuclei_base = self.tools_dir / "nuclei-templates"
         os.makedirs(nuclei_base / "custom", exist_ok=True)
         
-        # Clone and organize repositories
-        for name, repo_info in tqdm(git_repos.items(), desc="Cloning repositories"):
+        # Clone only missing repositories
+        for name, repo_info in tqdm(git_repos.items(), desc="Checking/Cloning repositories"):
             try:
                 if isinstance(repo_info, dict):
-                    # Handle custom template repositories
                     repo_url = repo_info["url"]
                     repo_dir = self.tools_dir / repo_info["dir"]
-                    os.makedirs(os.path.dirname(repo_dir), exist_ok=True)
                 else:
-                    # Handle regular repositories
                     repo_url = repo_info
                     repo_dir = self.tools_dir / name
                 
                 if not repo_dir.exists():
+                    os.makedirs(os.path.dirname(repo_dir), exist_ok=True)
                     subprocess.run(["git", "clone", repo_url, str(repo_dir)], check=True)
                     
                     # Special handling for nuclei-templates-collection
@@ -362,9 +408,26 @@ class ReconBuddySetup:
                     requirements_file = repo_dir / "requirements.txt"
                     if requirements_file.exists():
                         try:
-                            subprocess.run([sys.executable, "-m", "pip", "install", "--break-system-packages", "-r", str(requirements_file)], check=True)
-                        except subprocess.CalledProcessError as e:
-                            logger.warning(f"Failed to install requirements for {name}: {str(e)}")
+                            # First try installing without problematic packages
+                            with open(requirements_file, 'r') as f:
+                                requirements = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+                            
+                            # Filter out known problematic packages
+                            skip_packages = ['datrie']
+                            filtered_requirements = [req for req in requirements if not any(skip in req.lower() for skip in skip_packages)]
+                            
+                            if filtered_requirements:
+                                try:
+                                    subprocess.run([
+                                        sys.executable, "-m", "pip", "install",
+                                        "--break-system-packages"
+                                    ] + filtered_requirements, check=True)
+                                except subprocess.CalledProcessError as e:
+                                    logger.warning(f"Failed to install some requirements for {name}: {str(e)}")
+                        except Exception as e:
+                            logger.warning(f"Failed to process requirements for {name}: {str(e)}")
+                else:
+                    logger.debug(f"Repository already exists: {name}")
                 
             except subprocess.CalledProcessError as e:
                 logger.warning(f"Failed to clone/build {name}: {str(e)}")
@@ -437,34 +500,47 @@ if __name__ == "__main__":
 
     def _setup_database(self):
         """Set up PostgreSQL database"""
-        print("🗄️ Setting up PostgreSQL database...")
+        print("🗄️ Checking PostgreSQL setup...")
         
         if self.system == "linux":
-            # Start PostgreSQL service
-            subprocess.run(["sudo", "systemctl", "start", "postgresql"], check=True)
-            
-            # Create database and user
             try:
-                subprocess.run([
-                    "sudo", "-u", "postgres", "psql",
-                    "-c", "CREATE DATABASE reconbuddy;"
-                ], check=True)
+                # Check if database already exists
+                check_db = subprocess.run(
+                    ["sudo", "-u", "postgres", "psql", "-lqt"],
+                    capture_output=True,
+                    text=True
+                )
+                if "reconbuddy" in check_db.stdout:
+                    logger.info("PostgreSQL database already exists")
+                    return
                 
-                subprocess.run([
-                    "sudo", "-u", "postgres", "psql",
-                    "-c", "CREATE USER reconbuddy WITH PASSWORD 'reconbuddy';"
-                ], check=True)
+                # Start PostgreSQL service
+                subprocess.run(["sudo", "systemctl", "start", "postgresql"], check=True)
                 
-                subprocess.run([
-                    "sudo", "-u", "postgres", "psql",
-                    "-c", "GRANT ALL PRIVILEGES ON DATABASE reconbuddy TO reconbuddy;"
-                ], check=True)
-            except subprocess.CalledProcessError:
-                logger.warning("Database might already exist, continuing...")
+                # Create database and user
+                try:
+                    subprocess.run([
+                        "sudo", "-u", "postgres", "psql",
+                        "-c", "CREATE DATABASE reconbuddy;"
+                    ], check=True)
+                    
+                    subprocess.run([
+                        "sudo", "-u", "postgres", "psql",
+                        "-c", "CREATE USER reconbuddy WITH PASSWORD 'reconbuddy';"
+                    ], check=True)
+                    
+                    subprocess.run([
+                        "sudo", "-u", "postgres", "psql",
+                        "-c", "GRANT ALL PRIVILEGES ON DATABASE reconbuddy TO reconbuddy;"
+                    ], check=True)
+                except subprocess.CalledProcessError:
+                    logger.warning("Database might already exist, continuing...")
+            except Exception as e:
+                logger.error(f"Error setting up database: {str(e)}")
 
     def _download_wordlists(self):
         """Download and set up wordlists"""
-        print("📚 Downloading wordlists...")
+        print("📚 Checking wordlists...")
         
         wordlists = [
             ("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/DNS/deepmagic.com-prefixes-top50000.txt", "dns-prefixes.txt"),
@@ -474,9 +550,12 @@ if __name__ == "__main__":
             ("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/api/api-endpoints.txt", "api-endpoints.txt")
         ]
         
-        for url, filename in tqdm(wordlists, desc="Downloading wordlists"):
+        for url, filename in tqdm(wordlists, desc="Checking/Downloading wordlists"):
             output_file = self.wordlists_dir / filename
-            subprocess.run(["curl", "-o", str(output_file), url], check=True)
+            if not output_file.exists():
+                subprocess.run(["curl", "-o", str(output_file), url], check=True)
+            else:
+                logger.debug(f"Wordlist already exists: {filename}")
 
     def _configure_environment(self):
         """Configure environment variables and settings"""
@@ -492,8 +571,15 @@ if __name__ == "__main__":
             "NUCLEI_TEMPLATES_PATH": f"{str(self.tools_dir)}/nuclei-templates:{str(self.tools_dir)}/nuclei-templates-collection/unified_templates"
         }
         
-        # Add to shell rc file
+        # Check if environment variables are already set
         shell_rc = Path.home() / (".bashrc" if self.system == "linux" else ".zshrc")
+        if shell_rc.exists():
+            current_content = shell_rc.read_text()
+            if "# ReconBuddy Environment Variables" in current_content:
+                logger.info("Environment variables already configured")
+                return
+        
+        # Add to shell rc file
         with open(shell_rc, "a") as f:
             f.write("\n# ReconBuddy Environment Variables\n")
             for key, value in env_vars.items():

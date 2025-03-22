@@ -1,0 +1,802 @@
+[
+  {
+    "name": "Kiwi",
+    "full_name": "kiwi-bdd/Kiwi",
+    "description": "Simple BDD for iOS",
+    "url": "https://github.com/kiwi-bdd/Kiwi",
+    "stars": 4134,
+    "forks": 510
+  },
+  {
+    "name": "kiwi",
+    "full_name": "alibaba/kiwi",
+    "description": "\ud83d\udc24 Kiwi-\u56fd\u9645\u5316\u7ffb\u8bd1\u5168\u6d41\u7a0b\u89e3\u51b3\u65b9\u6848",
+    "url": "https://github.com/alibaba/kiwi",
+    "stars": 2577,
+    "forks": 238
+  },
+  {
+    "name": "Kiwi",
+    "full_name": "kiwitcms/Kiwi",
+    "description": "open source test management system with over 2 million downloads!",
+    "url": "https://github.com/kiwitcms/Kiwi",
+    "stars": 1017,
+    "forks": 300
+  },
+  {
+    "name": "kiwi",
+    "full_name": "OSInside/kiwi",
+    "description": "KIWI - Appliance Builder Next Generation",
+    "url": "https://github.com/OSInside/kiwi",
+    "stars": 324,
+    "forks": 155
+  },
+  {
+    "name": "kiwi",
+    "full_name": "nucleic/kiwi",
+    "description": "Efficient C++ implementation of the Cassowary constraint solving algorithm",
+    "url": "https://github.com/nucleic/kiwi",
+    "stars": 713,
+    "forks": 92
+  },
+  {
+    "name": "kiwi",
+    "full_name": "evanw/kiwi",
+    "description": "A schema-based binary format for efficiently encoding trees of data",
+    "url": "https://github.com/evanw/kiwi",
+    "stars": 719,
+    "forks": 48
+  },
+  {
+    "name": "Kiwi",
+    "full_name": "bab2min/Kiwi",
+    "description": "Kiwi(\uc9c0\ub2a5\ud615 \ud55c\uad6d\uc5b4 \ud615\ud0dc\uc18c \ubd84\uc11d\uae30)",
+    "url": "https://github.com/bab2min/Kiwi",
+    "stars": 568,
+    "forks": 51
+  },
+  {
+    "name": "kiwi",
+    "full_name": "gbtb16/kiwi",
+    "description": "A simple compile-time dependency injection library for Dart and Flutter",
+    "url": "https://github.com/gbtb16/kiwi",
+    "stars": 351,
+    "forks": 52
+  },
+  {
+    "name": "kiwi",
+    "full_name": "alpha1e0/kiwi",
+    "description": "kiwi\uff1a\u5b89\u5168\u6e90\u7801\u5ba1\u8ba1\u5de5\u5177",
+    "url": "https://github.com/alpha1e0/kiwi",
+    "stars": 240,
+    "forks": 52
+  },
+  {
+    "name": "mimikatz",
+    "full_name": "gentilkiwi/mimikatz",
+    "description": "A little tool to play with Windows security",
+    "url": "https://github.com/gentilkiwi/mimikatz",
+    "stars": 19925,
+    "forks": 3820
+  },
+  {
+    "name": "src.next",
+    "full_name": "kiwibrowser/src.next",
+    "description": "Source-code for Kiwi Next, a Kiwi Browser auto-rebased with latest Chromium",
+    "url": "https://github.com/kiwibrowser/src.next",
+    "stars": 2690,
+    "forks": 376
+  },
+  {
+    "name": "src",
+    "full_name": "kiwibrowser/src",
+    "description": "Source-code used in Kiwi Browser for Android",
+    "url": "https://github.com/kiwibrowser/src",
+    "stars": 2864,
+    "forks": 396
+  },
+  {
+    "name": "KiwiIRC",
+    "full_name": "prawnsalad/KiwiIRC",
+    "description": "This is **DEPRECATED**! Please go to https://github.com/kiwiirc/kiwiirc",
+    "url": "https://github.com/prawnsalad/KiwiIRC",
+    "stars": 894,
+    "forks": 277
+  },
+  {
+    "name": "kiwi.js",
+    "full_name": "gamelab/kiwi.js",
+    "description": "Kiwi.js is a blazingly fast mobile & desktop browser based HTML5 game framework. It uses CocoonJS for publishing to the AppStore.",
+    "url": "https://github.com/gamelab/kiwi.js",
+    "stars": 1420,
+    "forks": 193
+  },
+  {
+    "name": "kiwiirc",
+    "full_name": "kiwiirc/kiwiirc",
+    "description": "\ud83e\udd5d Next generation of the Kiwi IRC web client",
+    "url": "https://github.com/kiwiirc/kiwiirc",
+    "stars": 898,
+    "forks": 222
+  },
+  {
+    "name": "kiwi",
+    "full_name": "mobius3/kiwi",
+    "description": "KiWi: Killer Widgets",
+    "url": "https://github.com/mobius3/kiwi",
+    "stars": 187,
+    "forks": 20
+  },
+  {
+    "name": "Invoke-PSImage",
+    "full_name": "peewpw/Invoke-PSImage",
+    "description": "Encodes a PowerShell script in the pixels of a PNG file and generates a oneliner to execute",
+    "url": "https://github.com/peewpw/Invoke-PSImage",
+    "stars": 2180,
+    "forks": 399
+  },
+  {
+    "name": "kiwi",
+    "full_name": "nical/kiwi",
+    "description": "Generic pipeline system working with filters and resources that are connected through ports",
+    "url": "https://github.com/nical/kiwi",
+    "stars": 69,
+    "forks": 17
+  },
+  {
+    "name": "kiwi",
+    "full_name": "stoq/kiwi",
+    "description": "A graphical UI framework on top of PyGTK",
+    "url": "https://github.com/stoq/kiwi",
+    "stars": 28,
+    "forks": 23
+  },
+  {
+    "name": "Kiwi",
+    "full_name": "danielwertheim/Kiwi",
+    "description": "For embedding your GitHub Wiki locally, i.e in ASP.Net MVC",
+    "url": "https://github.com/danielwertheim/Kiwi",
+    "stars": 46,
+    "forks": 17
+  },
+  {
+    "name": "Kiwi",
+    "full_name": "Musicoll/Kiwi",
+    "description": ":kiwi_fruit:  Realtime collaborative audio patching",
+    "url": "https://github.com/Musicoll/Kiwi",
+    "stars": 139,
+    "forks": 11
+  },
+  {
+    "name": "kiwix-android",
+    "full_name": "kiwix/kiwix-android",
+    "description": "Kiwix for Android",
+    "url": "https://github.com/kiwix/kiwix-android",
+    "stars": 974,
+    "forks": 478
+  },
+  {
+    "name": "kiwi",
+    "full_name": "lume/kiwi",
+    "description": "Fast TypeScript implementation of the Cassowary constraint solving algorithm (soon for AssemblyScript / WebAssembly).",
+    "url": "https://github.com/lume/kiwi",
+    "stars": 164,
+    "forks": 8
+  },
+  {
+    "name": "3d-game-shaders-for-beginners",
+    "full_name": "lettier/3d-game-shaders-for-beginners",
+    "description": "\ud83c\udfae A step-by-step guide to implementing SSAO, depth of field, lighting, normal mapping, and more for your 3D game.",
+    "url": "https://github.com/lettier/3d-game-shaders-for-beginners",
+    "stars": 18489,
+    "forks": 1414
+  },
+  {
+    "name": "kiwi-legacy",
+    "full_name": "OSInside/kiwi-legacy",
+    "description": "KIWI - Appliance Builder (legacy please read deprecation notice)",
+    "url": "https://github.com/OSInside/kiwi-legacy",
+    "stars": 148,
+    "forks": 76
+  },
+  {
+    "name": "dentaku",
+    "full_name": "rubysolo/dentaku",
+    "description": "math and logic formula parser and evaluator",
+    "url": "https://github.com/rubysolo/dentaku",
+    "stars": 897,
+    "forks": 161
+  },
+  {
+    "name": "KiwiTalk",
+    "full_name": "KiwiTalk/KiwiTalk",
+    "description": "An UNOFFICIAL cross-platform KakaoTalk client written in TypeScript & Rust (SolidJS, tauri)",
+    "url": "https://github.com/KiwiTalk/KiwiTalk",
+    "stars": 697,
+    "forks": 84
+  },
+  {
+    "name": "orbit",
+    "full_name": "kiwicom/orbit",
+    "description": "React components of open-source Orbit design system by Kiwi.com",
+    "url": "https://github.com/kiwicom/orbit",
+    "stars": 1402,
+    "forks": 152
+  },
+  {
+    "name": "mimikatz",
+    "full_name": "ParrotSec/mimikatz",
+    "description": null,
+    "url": "https://github.com/ParrotSec/mimikatz",
+    "stars": 1631,
+    "forks": 264
+  },
+  {
+    "name": "Kiwi",
+    "full_name": "Snownee/Kiwi",
+    "description": "Kiwi is a Minecraft modding library designed to help developers focus on content creation instead of repetitive work.",
+    "url": "https://github.com/Snownee/Kiwi",
+    "stars": 45,
+    "forks": 11
+  },
+  {
+    "name": "kiwi",
+    "full_name": "crystal-community/kiwi",
+    "description": "A unified Crystal interface for key-value stores.",
+    "url": "https://github.com/crystal-community/kiwi",
+    "stars": 65,
+    "forks": 6
+  },
+  {
+    "name": "dracula",
+    "full_name": "strathausen/dracula",
+    "description": "JavaScript layout and representation of connected graphs.",
+    "url": "https://github.com/strathausen/dracula",
+    "stars": 836,
+    "forks": 132
+  },
+  {
+    "name": "redis-node-client",
+    "full_name": "fictorial/redis-node-client",
+    "description": "Redis client for Node.js (abandoned)",
+    "url": "https://github.com/fictorial/redis-node-client",
+    "stars": 410,
+    "forks": 64
+  },
+  {
+    "name": "kiwi",
+    "full_name": "sdslabs/kiwi",
+    "description": "A minimalistic in-memory key value store.",
+    "url": "https://github.com/sdslabs/kiwi",
+    "stars": 158,
+    "forks": 4
+  },
+  {
+    "name": "webpack-tutorial",
+    "full_name": "vp-online-courses/webpack-tutorial",
+    "description": "Webpack Tutorial",
+    "url": "https://github.com/vp-online-courses/webpack-tutorial",
+    "stars": 180,
+    "forks": 212
+  },
+  {
+    "name": "kiwi",
+    "full_name": "arana-db/kiwi",
+    "description": "a high-performance, large-capacity, multi-tenant, data-persistent, strong data consistency based on raft, Redis-compatible elastic KV data storage system based on RocksDB",
+    "url": "https://github.com/arana-db/kiwi",
+    "stars": 38,
+    "forks": 9
+  },
+  {
+    "name": "kiwipiepy",
+    "full_name": "bab2min/kiwipiepy",
+    "description": "Python API for Kiwi",
+    "url": "https://github.com/bab2min/kiwipiepy",
+    "stars": 312,
+    "forks": 32
+  },
+  {
+    "name": "kiwi",
+    "full_name": "syuilo/kiwi",
+    "description": "\ud83e\udd5d A modern, powerful and sweet wiki engine",
+    "url": "https://github.com/syuilo/kiwi",
+    "stars": 57,
+    "forks": 7
+  },
+  {
+    "name": "OCUnit2JUnit",
+    "full_name": "ciryon/OCUnit2JUnit",
+    "description": "A script that converts output from OCUnit in xcodebuild to the XML format used by JUnit. This allows for XCode builds on continuos integration servers like Jenkins, complete with test reports!",
+    "url": "https://github.com/ciryon/OCUnit2JUnit",
+    "stars": 220,
+    "forks": 62
+  },
+  {
+    "name": "kiwi",
+    "full_name": "ollita7/kiwi",
+    "description": "Built using only nodejs core. Lightweight, intuitive together with great performance and response timing.",
+    "url": "https://github.com/ollita7/kiwi",
+    "stars": 44,
+    "forks": 8
+  },
+  {
+    "name": "kiwi",
+    "full_name": "emolch/kiwi",
+    "description": "Kinematic Waveform Inversion Toolkit",
+    "url": "https://github.com/emolch/kiwi",
+    "stars": 26,
+    "forks": 10
+  },
+  {
+    "name": "kiwi.js",
+    "full_name": "IjzerenHein/kiwi.js",
+    "description": "Fast TypeScript implementation of the Cassowary constraint solving algorithm \ud83d\udd96",
+    "url": "https://github.com/IjzerenHein/kiwi.js",
+    "stars": 251,
+    "forks": 23
+  },
+  {
+    "name": "kiwi",
+    "full_name": "yglukhov/kiwi",
+    "description": "Constraint solving library",
+    "url": "https://github.com/yglukhov/kiwi",
+    "stars": 51,
+    "forks": 7
+  },
+  {
+    "name": "kiwi",
+    "full_name": "mrusme/kiwi",
+    "description": "Pimoroni Keybow based, WiFi-enabled Macro Pad (a.k.a. poor-man's Elgato Stream Deck)",
+    "url": "https://github.com/mrusme/kiwi",
+    "stars": 64,
+    "forks": 6
+  },
+  {
+    "name": "kiwix-desktop",
+    "full_name": "kiwix/kiwix-desktop",
+    "description": "Kiwix for Windows and GNU/Linux desktops",
+    "url": "https://github.com/kiwix/kiwix-desktop",
+    "stars": 880,
+    "forks": 122
+  },
+  {
+    "name": "stretto",
+    "full_name": "benkaiser/stretto",
+    "description": "Beautiful web-based music player",
+    "url": "https://github.com/benkaiser/stretto",
+    "stars": 619,
+    "forks": 97
+  },
+  {
+    "name": "kiwix-js",
+    "full_name": "kiwix/kiwix-js",
+    "description": "Fully portable & lightweight ZIM reader in Javascript",
+    "url": "https://github.com/kiwix/kiwix-js",
+    "stars": 338,
+    "forks": 154
+  },
+  {
+    "name": "Beagle_SDR_GPS",
+    "full_name": "jks-prv/Beagle_SDR_GPS",
+    "description": "KiwiSDR: BeagleBone web-accessible shortwave receiver and software-defined GPS (archived)",
+    "url": "https://github.com/jks-prv/Beagle_SDR_GPS",
+    "stars": 497,
+    "forks": 163
+  },
+  {
+    "name": "awesome-se",
+    "full_name": "SJTU-SE/awesome-se",
+    "description": "\ud83d\udc68\u200d\ud83d\udcbb \u2764\ufe0f \ud83d\udcbb \u4e0a\u6d77\u4ea4\u901a\u5927\u5b66\u8f6f\u4ef6\u5b66\u9662\u672c\u79d1\u7f16\u7a0b\u4f5c\u4e1a\u53c2\u8003",
+    "url": "https://github.com/SJTU-SE/awesome-se",
+    "stars": 859,
+    "forks": 139
+  },
+  {
+    "name": "kiwi",
+    "full_name": "Andoryuuta/kiwi",
+    "description": "A package for memory editing in go.",
+    "url": "https://github.com/Andoryuuta/kiwi",
+    "stars": 40,
+    "forks": 7
+  },
+  {
+    "name": "android",
+    "full_name": "kiwibrowser/android",
+    "description": "This repository is archived, and is now transferred to https://github.com/kiwibrowser/src",
+    "url": "https://github.com/kiwibrowser/android",
+    "stars": 732,
+    "forks": 74
+  },
+  {
+    "name": "CyberDropDownloader",
+    "full_name": "Jules-WinnfieldX/CyberDropDownloader",
+    "description": "Bulk Gallery Downloader for Cyberdrop.me and Other Sites",
+    "url": "https://github.com/Jules-WinnfieldX/CyberDropDownloader",
+    "stars": 1690,
+    "forks": 205
+  },
+  {
+    "name": "kiwix-tools",
+    "full_name": "kiwix/kiwix-tools",
+    "description": "Command line Kiwix tools: kiwix-serve, kiwix-manage, ...",
+    "url": "https://github.com/kiwix/kiwix-tools",
+    "stars": 541,
+    "forks": 96
+  },
+  {
+    "name": "kiwi-descriptions",
+    "full_name": "OSInside/kiwi-descriptions",
+    "description": "Provides a collection of kiwi image descriptions",
+    "url": "https://github.com/OSInside/kiwi-descriptions",
+    "stars": 66,
+    "forks": 42
+  },
+  {
+    "name": "webscrapbook",
+    "full_name": "danny0838/webscrapbook",
+    "description": "A browser extension that captures web pages to local device or backend server for future retrieval, organization, annotation, and edit. This project inherits from legacy Firefox add-on ScrapBook X.",
+    "url": "https://github.com/danny0838/webscrapbook",
+    "stars": 975,
+    "forks": 124
+  },
+  {
+    "name": "kiwipedia",
+    "full_name": "alsacreations/kiwipedia",
+    "description": "Base de connaissances techniques et  bonnes pratiques internes \u00e0 l'agence Alsacr\u00e9ations",
+    "url": "https://github.com/alsacreations/kiwipedia",
+    "stars": 326,
+    "forks": 87
+  },
+  {
+    "name": "kiwi",
+    "full_name": "coolony/kiwi",
+    "description": "Simple yet powerful asynchronous JavaScript template engine based on jQuery Template syntax, usable server-side or client-side.",
+    "url": "https://github.com/coolony/kiwi",
+    "stars": 41,
+    "forks": 6
+  },
+  {
+    "name": "kiwi",
+    "full_name": "larsks/kiwi",
+    "description": null,
+    "url": "https://github.com/larsks/kiwi",
+    "stars": 24,
+    "forks": 7
+  },
+  {
+    "name": "kiwix-apple",
+    "full_name": "kiwix/kiwix-apple",
+    "description": "Kiwix for iOS & macOS",
+    "url": "https://github.com/kiwix/kiwix-apple",
+    "stars": 562,
+    "forks": 78
+  },
+  {
+    "name": "Nocilla",
+    "full_name": "luisobo/Nocilla",
+    "description": "Testing HTTP requests has never been easier. Nocilla: Stunning HTTP stubbing for iOS and Mac OS X.",
+    "url": "https://github.com/luisobo/Nocilla",
+    "stars": 1833,
+    "forks": 172
+  },
+  {
+    "name": "obs-build",
+    "full_name": "openSUSE/obs-build",
+    "description": "OBS build script, can be used with OBS or stand alone",
+    "url": "https://github.com/openSUSE/obs-build",
+    "stars": 135,
+    "forks": 192
+  },
+  {
+    "name": "whatsapp-monitor",
+    "full_name": "rizwansoaib/whatsapp-monitor",
+    "description": "Free Whatsapp Online Tracker App Android,iOS, Windows, Linux,MAC\ud83d\udcf2  | WhatsApp last seen tracker | [Get Notification \ud83d\udd14  and history \ud83d\udcdc of Online WhatsApp Contact]",
+    "url": "https://github.com/rizwansoaib/whatsapp-monitor",
+    "stars": 1080,
+    "forks": 201
+  },
+  {
+    "name": "kiwi",
+    "full_name": "landakram/kiwi",
+    "description": "A personal wiki app for iOS.",
+    "url": "https://github.com/landakram/kiwi",
+    "stars": 63,
+    "forks": 4
+  },
+  {
+    "name": "kiss-translator",
+    "full_name": "fishjar/kiss-translator",
+    "description": "A simple, open source bilingual translation extension & Greasemonkey script (\u4e00\u4e2a\u7b80\u7ea6\u3001\u5f00\u6e90\u7684 \u53cc\u8bed\u5bf9\u7167\u7ffb\u8bd1\u6269\u5c55 & \u6cb9\u7334\u811a\u672c)",
+    "url": "https://github.com/fishjar/kiss-translator",
+    "stars": 3493,
+    "forks": 138
+  },
+  {
+    "name": "LeKiwi",
+    "full_name": "SIGRobotics-UIUC/LeKiwi",
+    "description": "LeKiwi - Low-Cost Mobile Manipulator",
+    "url": "https://github.com/SIGRobotics-UIUC/LeKiwi",
+    "stars": 471,
+    "forks": 55
+  },
+  {
+    "name": "Nayan-Bot",
+    "full_name": "MOHAMMAD-NAYAN/Nayan-Bot",
+    "description": null,
+    "url": "https://github.com/MOHAMMAD-NAYAN/Nayan-Bot",
+    "stars": 28,
+    "forks": 265
+  },
+  {
+    "name": "OldTwitter",
+    "full_name": "dimdenGD/OldTwitter",
+    "description": "Extension to return old Twitter layout from 2015 / 2018.",
+    "url": "https://github.com/dimdenGD/OldTwitter",
+    "stars": 1988,
+    "forks": 168
+  },
+  {
+    "name": "sync",
+    "full_name": "kiwibrowser/sync",
+    "description": "Open-source Chrome Extension for Bookmarks and Profile sync",
+    "url": "https://github.com/kiwibrowser/sync",
+    "stars": 209,
+    "forks": 25
+  },
+  {
+    "name": "orbit-compose",
+    "full_name": "kiwicom/orbit-compose",
+    "description": "Android Jetpack Compose components of open-source Orbit design system by Kiwi.com.",
+    "url": "https://github.com/kiwicom/orbit-compose",
+    "stars": 166,
+    "forks": 22
+  },
+  {
+    "name": "python-nvd3",
+    "full_name": "areski/python-nvd3",
+    "description": "Python Wrapper for NVD3 - It's time for beautiful charts",
+    "url": "https://github.com/areski/python-nvd3",
+    "stars": 665,
+    "forks": 191
+  },
+  {
+    "name": "kiwi",
+    "full_name": "ShikariSohan/kiwi",
+    "description": null,
+    "url": "https://github.com/ShikariSohan/kiwi",
+    "stars": 12,
+    "forks": 6
+  },
+  {
+    "name": "burner.kiwi",
+    "full_name": "haydenwoodhead/burner.kiwi",
+    "description": "No bullshit temporary mail service written in Go",
+    "url": "https://github.com/haydenwoodhead/burner.kiwi",
+    "stars": 222,
+    "forks": 27
+  },
+  {
+    "name": "kiwi-examples",
+    "full_name": "gamelab/kiwi-examples",
+    "description": "A collection of examples made in Kiwi.js",
+    "url": "https://github.com/gamelab/kiwi-examples",
+    "stars": 28,
+    "forks": 25
+  },
+  {
+    "name": "kiwi.nvim",
+    "full_name": "serenevoid/kiwi.nvim",
+    "description": "A stripped down VimWiki for Neovim",
+    "url": "https://github.com/serenevoid/kiwi.nvim",
+    "stars": 200,
+    "forks": 9
+  },
+  {
+    "name": "extensions",
+    "full_name": "kiwibrowser/extensions",
+    "description": "Extensions for Kiwi Browser",
+    "url": "https://github.com/kiwibrowser/extensions",
+    "stars": 97,
+    "forks": 32
+  },
+  {
+    "name": "OpenKiwi",
+    "full_name": "Unbabel/OpenKiwi",
+    "description": "Open-Source Machine Translation Quality Estimation in PyTorch",
+    "url": "https://github.com/Unbabel/OpenKiwi",
+    "stars": 230,
+    "forks": 47
+  },
+  {
+    "name": "kiwistand",
+    "full_name": "attestate/kiwistand",
+    "description": "kiwistand is a p2p node client for a web3 writer friendly Hacker News that nobody controls but everybody co-owns",
+    "url": "https://github.com/attestate/kiwistand",
+    "stars": 68,
+    "forks": 28
+  },
+  {
+    "name": "wvg",
+    "full_name": "FoxRefire/wvg",
+    "description": "Chrome/Firefox extension for pen-testing to retrieve encryption keys of Widevine protected content !DON'T DECRYPT CONTENT UNLESS YOU HAVE THE RIGHT TO DO IT!",
+    "url": "https://github.com/FoxRefire/wvg",
+    "stars": 500,
+    "forks": 93
+  },
+  {
+    "name": "KiwiFaceSDK_Demo_Android",
+    "full_name": "kiwi-face/KiwiFaceSDK_Demo_Android",
+    "description": "\u7531\u5f00\u4e3a\u79d1\u6280\u5f00\u53d1\u7684KiwiFace SDK\uff0c\u77ed\u89c6\u9891demo,\u652f\u6301Kiwi\u4eba\u8138\u8ddf\u8e2a/\u7279\u6548\uff08\u4eba\u8138\u7279\u6548\u3001\u4eba\u8138\u8d34\u7eb8\u3001\u7f8e\u989c\u3001\u6ee4\u955c\u3001\u54c8\u54c8\u955c\uff09/\u5f55\u5236 - Android\u7248",
+    "url": "https://github.com/kiwi-face/KiwiFaceSDK_Demo_Android",
+    "stars": 81,
+    "forks": 37
+  },
+  {
+    "name": "navigation-compose-typed",
+    "full_name": "kiwicom/navigation-compose-typed",
+    "description": "Type-safe arguments for Jetpack Navigation Compose using Kotlinx.Serialization",
+    "url": "https://github.com/kiwicom/navigation-compose-typed",
+    "stars": 235,
+    "forks": 9
+  },
+  {
+    "name": "jiffyreader.com",
+    "full_name": "ansh/jiffyreader.com",
+    "description": "A Browser Extension for faster reading on ANY website!",
+    "url": "https://github.com/ansh/jiffyreader.com",
+    "stars": 3915,
+    "forks": 198
+  },
+  {
+    "name": "KiwiSDR_PCB",
+    "full_name": "mfkiwl/KiwiSDR_PCB",
+    "description": "KiCAD PCB files for KiwiSDR project including active antenna and bias tee",
+    "url": "https://github.com/mfkiwl/KiwiSDR_PCB",
+    "stars": 35,
+    "forks": 37
+  },
+  {
+    "name": "kiwi",
+    "full_name": "ciaranj/kiwi",
+    "description": "node.js package management system -- feature rich, fast, inspired by GIT / RubyGems / Gemcutter / Kiwi Fruits :D",
+    "url": "https://github.com/ciaranj/kiwi",
+    "stars": 5,
+    "forks": 7
+  },
+  {
+    "name": "Ornithokrites",
+    "full_name": "tracek/Ornithokrites",
+    "description": "Automatic identification of kiwi calls from audio recordings",
+    "url": "https://github.com/tracek/Ornithokrites",
+    "stars": 51,
+    "forks": 15
+  },
+  {
+    "name": "kiwix-build",
+    "full_name": "kiwix/kiwix-build",
+    "description": "Kiwix & openZIM build engine",
+    "url": "https://github.com/kiwix/kiwix-build",
+    "stars": 98,
+    "forks": 48
+  },
+  {
+    "name": "rockstor-installer",
+    "full_name": "rockstor/rockstor-installer",
+    "description": "The kiwi-ng configuration used to create Rockstor 4 'Built on openSUSE' installers.",
+    "url": "https://github.com/rockstor/rockstor-installer",
+    "stars": 37,
+    "forks": 16
+  },
+  {
+    "name": "crpiframeplayer",
+    "full_name": "luiz-lp/crpiframeplayer",
+    "description": "CRP Iframe Player Atualizado 31/03/2021",
+    "url": "https://github.com/luiz-lp/crpiframeplayer",
+    "stars": 24,
+    "forks": 24
+  },
+  {
+    "name": "KiwiFaceSDK_Demo_iOS",
+    "full_name": "kiwi-face/KiwiFaceSDK_Demo_iOS",
+    "description": "\u8d34\u7eb8\u3001\u7f8e\u989c\u3001\u6ee4\u955cSDK\uff08\u7c7b\u4f3cFaceu\uff0cB612\uff09\uff0c\u7531\u5f00\u4e3a\u79d1\u6280\u5f00\u53d1\u7684KiwiFace SDK\uff0c\u77ed\u89c6\u9891demo,\u652f\u6301Kiwi\u4eba\u8138\u8ddf\u8e2a/\u7279\u6548/\u5f55\u5236\u3002\u8fdb\u5165demo\u9875\u9762\u751f\u6210license - iOS\u7248",
+    "url": "https://github.com/kiwi-face/KiwiFaceSDK_Demo_iOS",
+    "stars": 69,
+    "forks": 35
+  },
+  {
+    "name": "ec001-iOS-Testing-With-Kiwi",
+    "full_name": "editorscut/ec001-iOS-Testing-With-Kiwi",
+    "description": "Code download for \"Test Driving iOS Development with Kiwi\" available at http://editorscut.com.",
+    "url": "https://github.com/editorscut/ec001-iOS-Testing-With-Kiwi",
+    "stars": 66,
+    "forks": 14
+  },
+  {
+    "name": "enum-concern",
+    "full_name": "emreyarligan/enum-concern",
+    "description": "A PHP package for effortless Enumeration handling with Laravel Collections \ud83d\udce6 \u2728",
+    "url": "https://github.com/emreyarligan/enum-concern",
+    "stars": 213,
+    "forks": 8
+  },
+  {
+    "name": "Flutter_Bloc_Movie_2",
+    "full_name": "kzjn10/Flutter_Bloc_Movie_2",
+    "description": "The simple project uses Clean architecture.",
+    "url": "https://github.com/kzjn10/Flutter_Bloc_Movie_2",
+    "stars": 63,
+    "forks": 16
+  },
+  {
+    "name": "kiwix-js-pwa",
+    "full_name": "kiwix/kiwix-js-pwa",
+    "description": "Kiwix JS Offline Browser implemented as a Progressive Web App (PWA), and packaged as Electron, NWJS and UWP apps for Windows and Linux.",
+    "url": "https://github.com/kiwix/kiwix-js-pwa",
+    "stars": 204,
+    "forks": 38
+  },
+  {
+    "name": "KIF-Kiwi",
+    "full_name": "indiegogo/KIF-Kiwi",
+    "description": "Keep It Functional BDD style",
+    "url": "https://github.com/indiegogo/KIF-Kiwi",
+    "stars": 46,
+    "forks": 10
+  },
+  {
+    "name": "MongoDB-Node-Express-Blog",
+    "full_name": "cmarin/MongoDB-Node-Express-Blog",
+    "description": "Simple example of MongoDB, Node.js, Express, Mongoose, EJS blog",
+    "url": "https://github.com/cmarin/MongoDB-Node-Express-Blog",
+    "stars": 152,
+    "forks": 50
+  },
+  {
+    "name": "CLIP-SAM",
+    "full_name": "maxi-w/CLIP-SAM",
+    "description": "Experiment on combining CLIP with SAM to do open-vocabulary image segmentation.",
+    "url": "https://github.com/maxi-w/CLIP-SAM",
+    "stars": 362,
+    "forks": 33
+  },
+  {
+    "name": "classic_ntp",
+    "full_name": "kiwibrowser/classic_ntp",
+    "description": "New tab page for Kiwi Browser",
+    "url": "https://github.com/kiwibrowser/classic_ntp",
+    "stars": 44,
+    "forks": 23
+  },
+  {
+    "name": "kiwi",
+    "full_name": "grafov/kiwi",
+    "description": "Fast, structured, with filters and dynamic sinks. No levels. Logger & context keeper for Go language \ud83e\udd5d It smells like a mushroom.",
+    "url": "https://github.com/grafov/kiwi",
+    "stars": 25,
+    "forks": 3
+  },
+  {
+    "name": "cc-resource-archive",
+    "full_name": "creativecommons/cc-resource-archive",
+    "description": "Collection of resources on Creative Commons (CC) tools and other open topics",
+    "url": "https://github.com/creativecommons/cc-resource-archive",
+    "stars": 61,
+    "forks": 136
+  },
+  {
+    "name": "content-farm-terminator",
+    "full_name": "danny0838/content-farm-terminator",
+    "description": "Content Farm Terminator browser extension/\u300c\u7d42\u7d50\u5167\u5bb9\u8fb2\u5834\u300d\u700f\u89bd\u5668\u5957\u4ef6",
+    "url": "https://github.com/danny0838/content-farm-terminator",
+    "stars": 1355,
+    "forks": 47
+  },
+  {
+    "name": "nibepi",
+    "full_name": "anerdins/nibepi",
+    "description": "Backend for Nibe F series heatpump",
+    "url": "https://github.com/anerdins/nibepi",
+    "stars": 176,
+    "forks": 45
+  }
+]

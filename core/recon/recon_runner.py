@@ -11,8 +11,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from .subdomain_enum import SubdomainEnumerator
 from .content_discovery import ContentDiscovery
-from core.info_gathering.dns_tools import DNSTools
-from core.info_gathering.network_tools import NetworkTools
+from ..info_gathering.dns_tools import DNSTools
+from ..info_gathering.network_tools import NetworkTools
 
 class ReconRunner:
     def __init__(self, target_domain: str, output_dir: str = None, use_advanced: bool = True):

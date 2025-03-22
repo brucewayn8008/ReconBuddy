@@ -1,0 +1,35 @@
+2025-03-22 20:02:17,872 - ReconRunner - INFO - Starting reconnaissance for kiwi.com
+2025-03-22 20:02:17,873 - ReconRunner - INFO - Starting subdomain enumeration...
+2025-03-22 20:02:17,884 - SubdomainEnumerator - INFO - Starting subdomain enumeration for kiwi.com
+2025-03-22 20:02:17,885 - SubdomainEnumerator - INFO - Running passive enumeration...
+2025-03-22 20:02:17,885 - SubdomainEnumerator - INFO - Running basic subdomain enumeration...
+2025-03-22 20:03:04,860 - SubdomainEnumerator - INFO - Running bruteforce enumeration...
+2025-03-22 20:03:04,861 - SubdomainEnumerator - WARNING - Wordlist not found: wordlists/subdomains-top1million.txt
+2025-03-22 20:03:04,863 - SubdomainEnumerator - WARNING - Wordlist not found: wordlists/dns-common.txt
+2025-03-22 20:03:04,864 - SubdomainEnumerator - WARNING - Wordlist not found: wordlists/deepmagic.com-prefixes-top500.txt
+2025-03-22 20:03:04,868 - SubdomainEnumerator - INFO - Bruteforce completed. Found 0 subdomains
+2025-03-22 20:03:04,869 - SubdomainEnumerator - INFO - Running permutation scanning...
+2025-03-22 20:03:04,870 - SubdomainEnumerator - INFO - Starting permutation scanning...
+2025-03-22 20:03:05,050 - SubdomainEnumerator - INFO - Generated 0 permutations
+2025-03-22 20:03:05,055 - SubdomainEnumerator - INFO - Found 0 valid permuted subdomains
+2025-03-22 20:03:05,059 - SubdomainEnumerator - INFO - Total unique subdomains found: 0
+2025-03-22 20:03:05,060 - SubdomainEnumerator - INFO - - Passive: 0
+2025-03-22 20:03:05,060 - SubdomainEnumerator - INFO - - Bruteforce: 0
+2025-03-22 20:03:05,061 - SubdomainEnumerator - INFO - - Permutation: 0
+2025-03-22 20:03:05,067 - SubdomainEnumerator - INFO - Verifying active subdomains with httpx...
+2025-03-22 20:03:05,439 - SubdomainEnumerator - ERROR - Error running httpx: Usage: httpx [OPTIONS] URL
+
+Error: No such option: -l
+2025-03-22 20:03:05,445 - SubdomainEnumerator - INFO - Total subdomains: 0, Active subdomains: 0
+2025-03-22 20:03:05,445 - ReconRunner - INFO - Found 0 subdomains
+2025-03-22 20:03:05,446 - ReconRunner - INFO - Starting content discovery...
+2025-03-22 20:03:05,483 - ReconRunner - INFO - Found 0 directories and 0 endpoints
+2025-03-22 20:03:05,484 - ReconRunner - INFO - Starting DNS analysis...
+2025-03-22 20:03:05,486 - ReconRunner - INFO - Resolved 0 IP addresses
+2025-03-22 20:03:05,487 - ReconRunner - INFO - Performed reverse DNS lookups for 0 IPs
+2025-03-22 20:03:05,728 - ReconRunner - WARNING - Zone transfer successful for kiwi.com! Found 1 records
+2025-03-22 20:03:11,826 - ReconRunner - INFO - Found 335 subdomains from certificate transparency logs
+2025-03-22 20:03:11,827 - ReconRunner - INFO - Generated 18 subdomain permutations
+2025-03-22 20:03:11,828 - ReconRunner - INFO - Starting network scanning...
+2025-03-22 20:03:11,831 - ReconRunner - INFO - Completed port scanning for 0 hosts
+2025-03-22 20:03:11,832 - ReconRunner - INFO - Detected services on 0 hosts
