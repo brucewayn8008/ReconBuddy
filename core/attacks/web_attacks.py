@@ -885,13 +885,14 @@ class WebAttackModule:
         
         return results
 
-    async def run_all_attacks(self, target: str, params: Optional[List[str]] = None) -> Dict[str, Any]:
+    async def run_all_attacks(self, target: str, params: Optional[List[str]] = None, vuln_endpoints: Optional[Dict[str, Set[str]]] = None) -> Dict[str, Any]:
         """
         Run all web attacks against a target
         
         Args:
             target: Target URL
             params: Optional list of parameters to test
+            vuln_endpoints: Optional dictionary of pre-filtered endpoints by vulnerability type
         """
         if not params:
             params = []
@@ -903,25 +904,51 @@ class WebAttackModule:
         }
         
         try:
-            # Run all attacks concurrently
-            ssrf_task = self.run_ssrfmap(target, params)
-            cors_task = self.run_corsscanner(target)
-            csrf_task = self.run_csrf_scan(target)
-            xss_task = self.run_xss_scan(target)
-            cmdi_task = self.run_command_injection(target, params)
-            redirect_task = self.run_open_redirect(target)
-            log4j_task = self.run_log4j_scan(target)
-            ssti_task = self.run_ssti_scan(target, params)
+            # Use pre-filtered endpoints if available
+            ssrf_targets = list(vuln_endpoints.get("ssrf", {target})) if vuln_endpoints else [target]
+            xss_targets = list(vuln_endpoints.get("xss", {target})) if vuln_endpoints else [target]
+            ssti_targets = list(vuln_endpoints.get("ssti", {target})) if vuln_endpoints else [target]
+            redirect_targets = list(vuln_endpoints.get("open-redirect", {target})) if vuln_endpoints else [target]
+            rce_targets = list(vuln_endpoints.get("rce", {target})) if vuln_endpoints else [target]
             
-            # Wait for all tasks to complete
-            results["attacks"]["ssrf"] = await ssrf_task
-            results["attacks"]["cors"] = await cors_task
-            results["attacks"]["csrf"] = await csrf_task
-            results["attacks"]["xss"] = await xss_task
-            results["attacks"]["command_injection"] = await cmdi_task
-            results["attacks"]["open_redirect"] = await redirect_task
-            results["attacks"]["log4j"] = await log4j_task
-            results["attacks"]["ssti"] = await ssti_task
+            # Run all attacks concurrently, using filtered endpoints where available
+            attack_tasks = []
+            
+            # SSRF attacks
+            for ssrf_target in ssrf_targets:
+                attack_tasks.append(("ssrf", self.run_ssrfmap(ssrf_target, params)))
+            
+            # CORS scan (on main target)
+            attack_tasks.append(("cors", self.run_corsscanner(target)))
+            
+            # CSRF scan (on main target)
+            attack_tasks.append(("csrf", self.run_csrf_scan(target)))
+            
+            # XSS attacks
+            for xss_target in xss_targets:
+                attack_tasks.append(("xss", self.run_xss_scan(xss_target)))
+            
+            # Command injection attacks
+            for rce_target in rce_targets:
+                attack_tasks.append(("command_injection", self.run_command_injection(rce_target, params)))
+            
+            # Open redirect attacks
+            for redirect_target in redirect_targets:
+                attack_tasks.append(("open_redirect", self.run_open_redirect(redirect_target)))
+            
+            # SSTI attacks
+            for ssti_target in ssti_targets:
+                attack_tasks.append(("ssti", self.run_ssti_scan(ssti_target, params)))
+            
+            # Wait for all tasks to complete and organize results
+            for attack_type, task in attack_tasks:
+                try:
+                    result = await task
+                    if attack_type not in results["attacks"]:
+                        results["attacks"][attack_type] = []
+                    results["attacks"][attack_type].append(result)
+                except Exception as e:
+                    self.logger.error(f"Error in {attack_type} scan: {str(e)}")
             
             # Save comprehensive results
             output_file = self.output_dir / f"{target.replace('://', '_').replace('/', '_')}_all_attacks.json"

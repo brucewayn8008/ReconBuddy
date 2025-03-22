@@ -31,8 +31,10 @@ class SubdomainEnumerator:
         # Create output directories
         self.basic_output = self.output_dir / "basic_enum"
         self.advanced_output = self.output_dir / "advanced_enum"
-        os.makedirs(self.basic_output, exist_ok=True)
-        os.makedirs(self.advanced_output, exist_ok=True)
+        self.permutation_output = self.output_dir / "permutation_enum"  # New directory for permutations
+        
+        for directory in [self.basic_output, self.advanced_output, self.permutation_output]:
+            os.makedirs(directory, exist_ok=True)
         
     async def run_subfinder(self) -> Set[str]:
         """Run subfinder for passive subdomain enumeration"""
@@ -487,19 +489,103 @@ class SubdomainEnumerator:
         except Exception:
             return None
 
+    async def run_permutation_scan(self, input_subdomains: Set[str]) -> Set[str]:
+        """
+        Run permutation scanning using dnsgen and resolve the generated permutations
+        
+        Args:
+            input_subdomains: Set of discovered subdomains to generate permutations from
+        Returns:
+            Set of valid permuted subdomains
+        """
+        self.logger.info("Starting permutation scanning...")
+        discovered = set()
+        
+        try:
+            # Save input subdomains to file
+            input_file = self.permutation_output / "input_subdomains.txt"
+            with open(input_file, 'w') as f:
+                for subdomain in sorted(input_subdomains):
+                    f.write(f"{subdomain}\n")
+            
+            # Generate permutations using dnsgen
+            permutations_file = self.permutation_output / "generated_permutations.txt"
+            cmd = f"dnsgen {input_file} > {permutations_file}"
+            
+            process = await asyncio.create_subprocess_shell(
+                cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            await process.communicate()
+            
+            if not permutations_file.exists():
+                self.logger.error("Dnsgen failed to generate permutations")
+                return discovered
+            
+            # Read and filter permutations
+            permutations = set()
+            with open(permutations_file) as f:
+                for line in f:
+                    domain = line.strip()
+                    if domain.endswith(self.target_domain):
+                        permutations.add(domain)
+            
+            self.logger.info(f"Generated {len(permutations)} permutations")
+            
+            # Resolve permutations in chunks
+            chunk_size = 1000
+            permutation_chunks = [list(permutations)[i:i + chunk_size] 
+                                for i in range(0, len(permutations), chunk_size)]
+            
+            for chunk in permutation_chunks:
+                # Save chunk to temporary file
+                chunk_file = self.permutation_output / "temp_chunk.txt"
+                with open(chunk_file, 'w') as f:
+                    for domain in chunk:
+                        f.write(f"{domain}\n")
+                
+                # Resolve using massdns
+                resolved = await self.run_massdns(str(chunk_file))
+                discovered.update(resolved)
+                
+                # Clean up temp file
+                if chunk_file.exists():
+                    os.remove(chunk_file)
+            
+            # Save valid permutations
+            valid_permutations_file = self.permutation_output / "valid_permutations.txt"
+            with open(valid_permutations_file, 'w') as f:
+                for domain in sorted(discovered):
+                    f.write(f"{domain}\n")
+            
+            self.logger.info(f"Found {len(discovered)} valid permuted subdomains")
+            
+        except Exception as e:
+            self.logger.error(f"Error during permutation scanning: {str(e)}")
+        
+        return discovered
+
     async def run_enumeration(self, domain: str) -> Set[str]:
         """Run complete subdomain enumeration"""
         all_subdomains = set()
         
         # Run passive enumeration first
+        self.logger.info("Running passive enumeration...")
         passive_results = await self.run_basic_enumeration()
         all_subdomains.update(passive_results)
         
         # Run bruteforce enumeration
+        self.logger.info("Running bruteforce enumeration...")
         bruteforce_results = await self.bruteforce_subdomains(domain)
         all_subdomains.update(bruteforce_results)
         
-        # Save combined results
+        # Run permutation scanning on discovered subdomains
+        self.logger.info("Running permutation scanning...")
+        permutation_results = await self.run_permutation_scan(all_subdomains)
+        all_subdomains.update(permutation_results)
+        
+        # Save combined results with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_file = self.output_dir / f"all_subdomains_{timestamp}.txt"
         
@@ -508,7 +594,76 @@ class SubdomainEnumerator:
                 f.write(f"{subdomain}\n")
         
         self.logger.info(f"Total unique subdomains found: {len(all_subdomains)}")
+        self.logger.info(f"- Passive: {len(passive_results)}")
+        self.logger.info(f"- Bruteforce: {len(bruteforce_results)}")
+        self.logger.info(f"- Permutation: {len(permutation_results)}")
+        
         return all_subdomains
+
+    async def verify_active_subdomains(self, subdomains: Set[str]) -> Set[str]:
+        """
+        Verify which subdomains are active using httpx
+        
+        Args:
+            subdomains: Set of discovered subdomains
+        Returns:
+            Set of active subdomains with web services
+        """
+        self.logger.info("Verifying active subdomains with httpx...")
+        active_subdomains = set()
+        
+        # Create a file to store the input subdomains
+        input_file = self.output_dir / "subdomains_for_httpx.txt"
+        with open(input_file, 'w') as f:
+            for subdomain in sorted(subdomains):
+                f.write(f"{subdomain}\n")
+        
+        # Define output files for httpx results
+        active_file = self.output_dir / "active_subdomains.txt"
+        json_file = self.output_dir / "active_subdomains_details.json"
+        
+        try:
+            # Run httpx to identify active subdomains
+            cmd = f"httpx -l {input_file} -silent -status-code -title -tech-detect -follow-redirects -o {active_file} -json -outfile {json_file}"
+            
+            process = await asyncio.create_subprocess_shell(
+                cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            _, stderr = await process.communicate()
+            
+            if process.returncode != 0:
+                self.logger.error(f"Error running httpx: {stderr.decode().strip()}")
+                return set()
+            
+            # Read the active subdomains
+            if active_file.exists():
+                with open(active_file, 'r') as f:
+                    for line in f:
+                        # httpx outputs may include the protocol and status code
+                        # We need to extract just the domain
+                        parts = line.strip().split()
+                        if parts:
+                            url = parts[0]
+                            # Extract domain from URL
+                            try:
+                                parsed = urlparse(url)
+                                active_subdomains.add(parsed.netloc)
+                            except Exception:
+                                # If parsing fails, try to use the raw value
+                                active_subdomains.add(url.split('//')[-1].split(':')[0])
+            
+            self.logger.info(f"Found {len(active_subdomains)} active subdomains with web services")
+            
+            # Parse JSON file for additional details (can be used in future enhancements)
+            if json_file.exists():
+                self.logger.info(f"Detailed active subdomain information saved to {json_file}")
+                
+        except Exception as e:
+            self.logger.error(f"Error during active subdomain verification: {str(e)}")
+        
+        return active_subdomains
 
     async def enumerate(self) -> Set[str]:
         """Run all subdomain enumeration methods"""
@@ -521,5 +676,17 @@ class SubdomainEnumerator:
         final_file = self.output_dir / "final_subdomains.txt"
         final_file.write_text("\n".join(sorted(all_subdomains)))
         
+        # Verify active subdomains with httpx
+        active_subdomains = await self.verify_active_subdomains(all_subdomains)
+        
+        # Save active subdomains list
+        active_file = self.output_dir / "active_subdomains_list.txt"
+        active_file.write_text("\n".join(sorted(active_subdomains)))
+        
+        self.logger.info(f"Total subdomains: {len(all_subdomains)}, Active subdomains: {len(active_subdomains)}")
+        
+        # Store both all subdomains and active subdomains
         self.subdomains = all_subdomains
+        self.active_subdomains = active_subdomains
+        
         return all_subdomains 

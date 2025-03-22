@@ -10,6 +10,7 @@ import aiohttp
 from bs4 import BeautifulSoup
 import concurrent.futures
 from datetime import datetime
+import tempfile
 
 class ContentDiscovery:
     def __init__(self, subdomains: List[str], output_dir: str = "results"):
@@ -614,7 +615,65 @@ class ContentDiscovery:
         
         return results
 
-    # Enhanced discovery for a single target
+    async def filter_endpoints_by_pattern(self, endpoints: Set[str]) -> Dict[str, Set[str]]:
+        """
+        Filter endpoints using gf patterns for different vulnerability types
+        
+        Args:
+            endpoints: Set of endpoints to filter
+        Returns:
+            Dictionary of vulnerability type to matching endpoints
+        """
+        patterns = {
+            "xss": "xss",
+            "ssrf": "ssrf",
+            "ssti": "ssti",
+            "open-redirect": "redirect",
+            "rce": "rce",
+            "lfi": "lfi",
+            "sqli": "sqli",
+            "debug-pages": "debug-pages",
+            "idor": "idor",
+            "interestingparams": "interestingparams"
+        }
+        
+        results = {}
+        
+        try:
+            # Create temporary file with all endpoints
+            with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as temp_file:
+                temp_file.write('\n'.join(endpoints))
+                temp_path = temp_file.name
+            
+            # Run gf with each pattern
+            for vuln_type, pattern in patterns.items():
+                cmd = f"cat {temp_path} | gf {pattern}"
+                process = await asyncio.create_subprocess_shell(
+                    cmd,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE
+                )
+                stdout, _ = await process.communicate()
+                
+                # Store matching endpoints
+                matching_endpoints = set(line.strip() for line in stdout.decode().splitlines() if line.strip())
+                if matching_endpoints:
+                    results[vuln_type] = matching_endpoints
+                    
+                    # Save to separate files for reference
+                    pattern_file = self.urls_output / f"{vuln_type}_endpoints.txt"
+                    with open(pattern_file, 'w') as f:
+                        f.write('\n'.join(sorted(matching_endpoints)))
+            
+            # Cleanup temporary file
+            os.unlink(temp_path)
+            
+        except Exception as e:
+            self.logger.error(f"Error filtering endpoints with gf: {str(e)}")
+        
+        return results
+
+    # Modify discover_target method to include vulnerability pattern matching
     async def discover_target(self, target: str) -> Dict[str, Any]:
         """
         Run comprehensive content discovery for a single target
@@ -666,16 +725,12 @@ class ContentDiscovery:
             # Run JavaScript analysis
             js_task = self.analyze_js_files(https_target)
             
-            # Run vulnerability scans with technology information
-            vuln_task = self.run_vulnerability_scans(https_target, await tech_task)
-            
             # Await all tasks
             dir_results = await asyncio.gather(*dir_tasks)
             endpoint_results = await asyncio.gather(*endpoint_tasks)
             param_results = await param_task
             tech_results = await tech_task
             js_results = await js_task
-            vuln_results = await vuln_task
             
             # Combine directory results
             directories = set()
@@ -687,7 +742,19 @@ class ContentDiscovery:
             endpoints = set()
             for result in endpoint_results:
                 endpoints.update(result)
+            
+            # Add JS endpoints to the mix
+            if js_results and "endpoints" in js_results:
+                endpoints.update(js_results["endpoints"])
+            
             results["endpoints"] = list(endpoints)
+            
+            # Filter endpoints by vulnerability patterns
+            vuln_endpoints = await self.filter_endpoints_by_pattern(endpoints)
+            results["vulnerability_endpoints"] = {
+                vuln_type: list(endpoints) 
+                for vuln_type, endpoints in vuln_endpoints.items()
+            }
             
             # Extract additional parameters from endpoints
             additional_params = await self.extract_parameters_from_urls(endpoints)
@@ -713,15 +780,15 @@ class ContentDiscovery:
             # Add JavaScript analysis results
             results["js_analysis"] = js_results
             
-            # Add vulnerability scan results
-            results["vulnerabilities"] = vuln_results
-            
             # Save combined results
             output_file = self.output_dir / f"{domain}_content_discovery.json"
             with open(output_file, 'w') as f:
                 json.dump(results, f, indent=2)
             
             self.logger.info(f"Content discovery completed for {target}")
+            self.logger.info("Vulnerability pattern matches found:")
+            for vuln_type, vuln_endpoints in results["vulnerability_endpoints"].items():
+                self.logger.info(f"- {vuln_type}: {len(vuln_endpoints)} endpoints")
             
         except Exception as e:
             self.logger.error(f"Error during content discovery for {target}: {str(e)}")

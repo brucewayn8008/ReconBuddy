@@ -1,0 +1,111 @@
+# ReconBuddy Configuration File
+
+# API Keys
+api_keys:
+  # GitHub API token for GitHub reconnaissance
+  github_token: ""
+  
+  # Burp Suite API key
+  burp_api_key: ""
+  burp_url: "http://localhost:1337"
+  
+  # ViewDNS API key for reverse WHOIS
+  viewdns_api_key: ""
+  
+  # WhoisXML API key
+  whoisxml_api_key: ""
+  
+  # SecurityTrails API key
+  securitytrails_api_key: ""
+  
+  # Shodan API key
+  shodan_api_key: ""
+  
+  # Censys API credentials
+  censys_api_id: ""
+  censys_api_secret: ""
+  
+  # Google Cloud API key (for Gemini AI reporting)
+  gemini_api_key: ""
+
+# Tool Paths
+tool_paths:
+  # Base directory for tools
+  tools_dir: "~/tools"
+  
+  # Wordlists directory
+  wordlists_dir: "~/wordlists"
+  
+  # Output directory for results
+  output_dir: "results"
+
+# Scanning Settings
+scan_settings:
+  # Maximum threads for concurrent operations
+  max_threads: 10
+  
+  # Request timeout in seconds
+  timeout: 30
+  
+  # Maximum depth for crawling
+  max_depth: 3
+  
+  # Rate limiting (requests per second)
+  rate_limit: 50
+  
+  # User agent for web requests
+  user_agent: "ReconBuddy v1.0"
+  
+  # Enable/disable advanced techniques
+  use_advanced: true
+  
+  # Enable/disable AI-enhanced reporting
+  use_ai_reporting: true
+
+# Database Settings
+database:
+  # Database connection string
+  connection_string: "postgresql://postgres:postgres@localhost:5432/reconbuddy"
+  
+  # Enable database logging
+  enable_logging: true
+  
+  # Database backup settings
+  backup_enabled: true
+  backup_interval: 86400  # 24 hours in seconds
+
+# Web Interface Settings
+web_interface:
+  host: "127.0.0.1"
+  port: 5000
+  debug: false
+  secret_key: "change-this-to-a-secure-secret-key"
+
+# Notification Settings
+notifications:
+  # Slack webhook URL for notifications
+  slack_webhook: ""
+  
+  # Discord webhook URL
+  discord_webhook: ""
+  
+  # Email notifications
+  email:
+    smtp_server: ""
+    smtp_port: 587
+    username: ""
+    password: ""
+    from_address: ""
+    to_address: ""
+
+# Proxy Settings
+proxy:
+  # HTTP/HTTPS proxy
+  http: ""
+  https: ""
+  
+  # SOCKS proxy
+  socks: ""
+  
+  # No proxy domains
+  no_proxy: ["localhost", "127.0.0.1"] 
