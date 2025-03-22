@@ -4,13 +4,14 @@ import json
 import re
 from typing import List, Set, Dict, Any, Optional, Tuple, Union
 from pathlib import Path
-import logging
 from urllib.parse import urljoin, urlparse, parse_qs
 import aiohttp
 from bs4 import BeautifulSoup
 import concurrent.futures
 from datetime import datetime
 import tempfile
+
+from core.utils.logger import get_logger, handle_exceptions
 
 class ContentDiscovery:
     def __init__(self, subdomains: List[str], output_dir: str = "results"):
@@ -23,7 +24,7 @@ class ContentDiscovery:
         """
         self.subdomains = subdomains
         self.output_dir = Path(output_dir)
-        self.logger = logging.getLogger("ContentDiscovery")
+        self.logger = get_logger("ContentDiscovery")
         
         # Create output directories
         self.dirs_output = self.output_dir / "directories"
@@ -38,11 +39,16 @@ class ContentDiscovery:
         self.jaeles_output = self.vuln_output / "jaeles"
         self.osmedeus_output = self.vuln_output / "osmedeus"
         
-        for directory in [self.dirs_output, self.urls_output, self.params_output, 
-                          self.tech_output, self.js_output, self.vuln_output, 
-                          self.nuclei_output, self.jaeles_output, self.osmedeus_output]:
-            os.makedirs(directory, exist_ok=True)
+        try:
+            for directory in [self.dirs_output, self.urls_output, self.params_output, 
+                            self.tech_output, self.js_output, self.vuln_output, 
+                            self.nuclei_output, self.jaeles_output, self.osmedeus_output]:
+                os.makedirs(directory, exist_ok=True)
+        except Exception as e:
+            self.logger.error(f"Failed to create output directories: {str(e)}")
+            raise
 
+    @handle_exceptions()
     async def run_ffuf(self, target: str, wordlist: Optional[str] = None) -> Set[str]:
         """Run ffuf for directory enumeration"""
         if not wordlist:
@@ -51,23 +57,30 @@ class ContentDiscovery:
         output_file = self.dirs_output / f"{target.replace('://', '_').replace('/', '_')}_ffuf.json"
         
         try:
+            self.logger.info(f"Starting ffuf scan on {target}")
             cmd = f"ffuf -u {target}/FUZZ -w {wordlist} -mc 200,204,301,302,307,401,403,405 -o {output_file} -of json"
             process = await asyncio.create_subprocess_shell(
                 cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
-            await process.communicate()
+            stdout, stderr = await process.communicate()
+            
+            if stderr:
+                self.logger.warning(f"ffuf stderr: {stderr.decode()}")
             
             # Parse JSON output and extract paths
             if output_file.exists():
                 results = json.loads(output_file.read_text())
-                return {urljoin(target, result.get('url', '').replace('FUZZ', '')) 
+                discovered = {urljoin(target, result.get('url', '').replace('FUZZ', '')) 
                         for result in results.get('results', [])}
+                self.logger.info(f"Found {len(discovered)} directories with ffuf")
+                return discovered
         except Exception as e:
             self.logger.error(f"Error running ffuf on {target}: {str(e)}")
         return set()
 
+    @handle_exceptions()
     async def run_gobuster(self, target: str, wordlist: Optional[str] = None) -> Set[str]:
         """Run gobuster for directory enumeration"""
         if not wordlist:
@@ -76,16 +89,22 @@ class ContentDiscovery:
         output_file = self.dirs_output / f"{target.replace('://', '_').replace('/', '_')}_gobuster.txt"
         
         try:
+            self.logger.info(f"Starting gobuster scan on {target}")
             cmd = f"gobuster dir -u {target} -w {wordlist} -o {output_file} -q"
             process = await asyncio.create_subprocess_shell(
                 cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
-            await process.communicate()
+            stdout, stderr = await process.communicate()
+            
+            if stderr:
+                self.logger.warning(f"gobuster stderr: {stderr.decode()}")
             
             if output_file.exists():
-                return {line.split()[0] for line in output_file.read_text().splitlines() if line}
+                discovered = {line.split()[0] for line in output_file.read_text().splitlines() if line}
+                self.logger.info(f"Found {len(discovered)} directories with gobuster")
+                return discovered
         except Exception as e:
             self.logger.error(f"Error running gobuster on {target}: {str(e)}")
         return set()
@@ -1078,5 +1097,92 @@ class ContentDiscovery:
             
         except Exception as e:
             self.logger.error(f"Error running vulnerability scans for {target}: {str(e)}")
+        
+        return results
+
+    async def run_comprehensive_scan(self, target: str) -> Dict[str, Any]:
+        """
+        Run a comprehensive, phased security scan:
+        1. Content discovery
+        2. Technology detection
+        3. Targeted vulnerability scanning
+        
+        Args:
+            target: Target URL or domain
+        """
+        results = {
+            "target": target,
+            "timestamp": datetime.now().isoformat(),
+            "phases": {}
+        }
+        
+        try:
+            # Phase 1: Content Discovery
+            self.logger.info(f"Phase 1: Content Discovery for {target}")
+            discovery_results = await self.discover_target(target)
+            results["phases"]["content_discovery"] = discovery_results
+            
+            # Phase 2: Technology Detection
+            self.logger.info(f"Phase 2: Technology Detection for {target}")
+            tech_info = await self.detect_technologies(target)
+            results["phases"]["technology_detection"] = tech_info
+            
+            # Phase 3: Initial Nuclei Scan (quick templates)
+            self.logger.info(f"Phase 3: Initial Vulnerability Scan for {target}")
+            quick_templates = [
+                "-t", "nuclei-templates/exposures/",
+                "-t", "nuclei-templates/misconfiguration/",
+                "-t", "nuclei-templates/default-logins/"
+            ]
+            initial_nuclei = await self.run_nuclei_scan(target, tech_info, quick_templates)
+            results["phases"]["initial_nuclei"] = initial_nuclei
+            
+            # Phase 4: Deep Vulnerability Scan (based on technology)
+            self.logger.info(f"Phase 4: Deep Vulnerability Scan for {target}")
+            vuln_results = await self.run_vulnerability_scans(target, tech_info)
+            results["phases"]["vulnerability_scan"] = vuln_results
+            
+            # Phase 5: Targeted Scanning (based on discoveries)
+            self.logger.info(f"Phase 5: Targeted Scanning for {target}")
+            
+            # If JS analysis found sensitive endpoints, scan them with specific templates
+            if "js_analysis" in discovery_results and "endpoints" in discovery_results["js_analysis"]:
+                js_endpoints = discovery_results["js_analysis"]["endpoints"]
+                if js_endpoints:
+                    endpoints_file = self.output_dir / f"{target}_js_endpoints.txt"
+                    with open(endpoints_file, "w") as f:
+                        f.write("\n".join(js_endpoints))
+                    
+                    # Run targeted scan on JS endpoints
+                    await self.run_nuclei_scan_on_list(endpoints_file, "js_endpoints")
+            
+            # If vulnerability patterns were found, scan those endpoints
+            if "vulnerability_endpoints" in discovery_results:
+                for vuln_type, endpoints in discovery_results["vulnerability_endpoints"].items():
+                    if endpoints:
+                        endpoints_file = self.output_dir / f"{target}_{vuln_type}_endpoints.txt"
+                        with open(endpoints_file, "w") as f:
+                            f.write("\n".join(endpoints))
+                        
+                        # Run specific template based on vulnerability type
+                        template_mapping = {
+                            "xss": ["vulnerabilities/generic/xss.yaml"],
+                            "ssrf": ["vulnerabilities/generic/ssrf.yaml"],
+                            "sqli": ["vulnerabilities/generic/sqli.yaml"],
+                            "lfi": ["vulnerabilities/generic/lfi.yaml"]
+                        }
+                        
+                        templates = template_mapping.get(vuln_type, ["vulnerabilities/generic/"])
+                        await self.run_nuclei_scan_on_list(endpoints_file, vuln_type, templates)
+            
+            # Save combined results
+            output_file = self.output_dir / f"{target.replace('://', '_').replace('/', '_')}_comprehensive.json"
+            with open(output_file, 'w') as f:
+                json.dump(results, f, indent=2)
+            
+            self.logger.info(f"Comprehensive scan completed for {target}")
+            
+        except Exception as e:
+            self.logger.error(f"Error during comprehensive scan for {target}: {str(e)}")
         
         return results 

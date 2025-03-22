@@ -9,6 +9,7 @@ import yaml
 from typing import List, Dict
 import logging
 from tqdm import tqdm
+from colorama import Fore, Style
 
 # Configure logging
 logging.basicConfig(
@@ -86,26 +87,64 @@ class ReconBuddySetup:
         print("📦 Installing system dependencies...")
         
         if self.system == "linux":
-            packages = [
+            # Update package lists
+            try:
+                subprocess.run(["sudo", "apt-get", "update"], check=True)
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Failed to update package lists: {str(e)}")
+                raise
+
+            # Core packages that should be available on all systems
+            core_packages = [
                 "git", "python3-pip", "python3-dev", "python3-venv",
                 "build-essential", "libpq-dev", "postgresql", "postgresql-contrib",
-                "chromium-browser", "nmap", "masscan", "whois", "jq",
-                "libpcap-dev", "libxml2-dev", "libxslt1-dev", "ruby-full",
-                "zlib1g-dev", "nodejs", "npm", "docker.io"
+                "nmap", "masscan", "whois", "jq", "libpcap-dev", "libxml2-dev",
+                "libxslt1-dev", "ruby-full", "zlib1g-dev", "nodejs", "npm", "docker.io"
             ]
+
+            # Try to install core packages
+            try:
+                subprocess.run(["sudo", "apt-get", "install", "-y"] + core_packages, check=True)
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Failed to install core packages: {str(e)}")
+                raise
+
+            # Try to install Chromium (different package names on different distros)
+            chromium_packages = ["chromium", "chromium-browser"]
+            chromium_installed = False
             
-            subprocess.run(["sudo", "apt-get", "update"], check=True)
-            subprocess.run(["sudo", "apt-get", "install", "-y"] + packages, check=True)
+            for pkg in chromium_packages:
+                try:
+                    subprocess.run(["sudo", "apt-get", "install", "-y", pkg], check=True)
+                    chromium_installed = True
+                    logger.info(f"Successfully installed {pkg}")
+                    break
+                except subprocess.CalledProcessError:
+                    logger.warning(f"Failed to install {pkg}, trying alternative...")
+                    continue
+
+            if not chromium_installed:
+                logger.warning("Could not install Chromium. Please install it manually.")
+                print(f"{Fore.YELLOW}⚠️ Warning: Could not install Chromium. You may need to install it manually.{Style.RESET_ALL}")
             
         elif self.system == "darwin":  # macOS
-            subprocess.run(["brew", "update"], check=True)
-            packages = [
-                "git", "python3", "postgresql", "nmap", "masscan",
-                "whois", "jq", "node", "docker", "chromium"
-            ]
-            
-            for pkg in packages:
-                subprocess.run(["brew", "install", pkg], check=True)
+            try:
+                subprocess.run(["brew", "update"], check=True)
+                packages = [
+                    "git", "python3", "postgresql", "nmap", "masscan",
+                    "whois", "jq", "node", "docker", "chromium"
+                ]
+                
+                for pkg in packages:
+                    try:
+                        subprocess.run(["brew", "install", pkg], check=True)
+                    except subprocess.CalledProcessError as e:
+                        logger.warning(f"Failed to install {pkg}: {str(e)}")
+                        print(f"⚠️ Warning: Failed to install {pkg}")
+                        continue
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Failed to update Homebrew: {str(e)}")
+                raise
         else:
             raise OSError(f"Unsupported operating system: {self.system}")
 
@@ -133,7 +172,12 @@ class ReconBuddySetup:
         ]
         
         for req in tqdm(requirements, desc="Installing Python packages"):
-            subprocess.run([sys.executable, "-m", "pip", "install", req], check=True)
+            try:
+                subprocess.run([sys.executable, "-m", "pip", "install", "--break-system-packages", req], check=True)
+            except subprocess.CalledProcessError as e:
+                logger.warning(f"Failed to install {req}: {str(e)}")
+                print(f"{Fore.YELLOW}⚠️ Warning: Failed to install {req}. You may need to install it manually.{Style.RESET_ALL}")
+                continue
 
     def _install_go(self):
         """Install or update Go"""
@@ -164,7 +208,7 @@ class ReconBuddySetup:
         # Go tools
         go_tools = [
             "github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest",
-            "github.com/OWASP/Amass/v3/...@master",
+            "github.com/owasp-amass/amass/v3/...@latest",
             "github.com/tomnomnom/assetfinder@latest",
             "github.com/projectdiscovery/httpx/cmd/httpx@latest",
             "github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest",
@@ -207,7 +251,7 @@ class ReconBuddySetup:
             "github.com/trickest/enumerepo@latest",
             "github.com/Hackmanit/Web-Cache-Vulnerability-Scanner@latest",
             "github.com/hakluke/hakip2host@latest",
-            "github.com/MrEmpy/mantra@latest",
+            "github.com/Brosck/mantra@latest",
             "github.com/cemulus/crt@latest",
             "github.com/sa7mon/s3scanner@latest",
             "github.com/sdcampbell/nmapurls@latest",
@@ -228,12 +272,36 @@ class ReconBuddySetup:
                 logger.warning(f"Failed to install {tool}: {str(e)}")
                 continue
         
-        # Git repositories - adding more from install.py
+        # Git repositories - Enhanced with more nuclei templates
         git_repos = {
+            # Existing repositories
             "massdns": "https://github.com/blechschmidt/massdns.git",
             "trufflehog": "https://github.com/trufflesecurity/trufflehog.git",
             "gitleaks": "https://github.com/zricethezav/gitleaks.git",
+            
+            # Main nuclei templates repositories
             "nuclei-templates": "https://github.com/projectdiscovery/nuclei-templates.git",
+            "nuclei-templates-collection": "https://github.com/emadshanab/Nuclei-Templates-Collection.git",
+            
+            # Additional template repositories
+            "custom-nuclei-templates": {
+                "url": "https://github.com/pikpikcu/nuclei-templates.git",
+                "dir": "nuclei-templates/custom/pikpikcu"
+            },
+            "kenzer-templates": {
+                "url": "https://github.com/ARPSyndicate/kenzer-templates.git",
+                "dir": "nuclei-templates/custom/kenzer"
+            },
+            "nuclei-templates-bb": {
+                "url": "https://github.com/esetal/nuclei-bb-templates.git",
+                "dir": "nuclei-templates/custom/bb-templates"
+            },
+            "fuzzing-templates": {
+                "url": "https://github.com/0x71rex/0-fuzzing-templates.git",
+                "dir": "nuclei-templates/custom/fuzzing"
+            },
+            
+            # Rest of the existing repositories...
             "SecLists": "https://github.com/danielmiessler/SecLists.git",
             "dorks_hunter": "https://github.com/six2dez/dorks_hunter.git",
             "dnsvalidator": "https://github.com/vortexau/dnsvalidator.git",
@@ -262,18 +330,110 @@ class ReconBuddySetup:
             "Spoofy": "https://github.com/MattKeeley/Spoofy.git"
         }
         
-        for name, url in tqdm(git_repos.items(), desc="Cloning repositories"):
-            repo_dir = self.tools_dir / name
-            if not repo_dir.exists():
-                try:
-                    subprocess.run(["git", "clone", url, str(repo_dir)], check=True)
+        # Create nuclei templates directory structure
+        nuclei_base = self.tools_dir / "nuclei-templates"
+        os.makedirs(nuclei_base / "custom", exist_ok=True)
+        
+        # Clone and organize repositories
+        for name, repo_info in tqdm(git_repos.items(), desc="Cloning repositories"):
+            try:
+                if isinstance(repo_info, dict):
+                    # Handle custom template repositories
+                    repo_url = repo_info["url"]
+                    repo_dir = self.tools_dir / repo_info["dir"]
+                    os.makedirs(os.path.dirname(repo_dir), exist_ok=True)
+                else:
+                    # Handle regular repositories
+                    repo_url = repo_info
+                    repo_dir = self.tools_dir / name
+                
+                if not repo_dir.exists():
+                    subprocess.run(["git", "clone", repo_url, str(repo_dir)], check=True)
+                    
+                    # Special handling for nuclei-templates-collection
+                    if name == "nuclei-templates-collection":
+                        self._process_template_collection(repo_dir)
                     
                     # Build tools that require compilation
                     if name == "massdns":
                         subprocess.run(["make"], cwd=str(repo_dir), check=True)
-                except subprocess.CalledProcessError as e:
-                    logger.warning(f"Failed to clone/build {name}: {str(e)}")
-                    continue
+                    
+                    # Install Python requirements if they exist
+                    requirements_file = repo_dir / "requirements.txt"
+                    if requirements_file.exists():
+                        try:
+                            subprocess.run([sys.executable, "-m", "pip", "install", "--break-system-packages", "-r", str(requirements_file)], check=True)
+                        except subprocess.CalledProcessError as e:
+                            logger.warning(f"Failed to install requirements for {name}: {str(e)}")
+                
+            except subprocess.CalledProcessError as e:
+                logger.warning(f"Failed to clone/build {name}: {str(e)}")
+                continue
+
+    def _process_template_collection(self, collection_dir: Path):
+        """Process and organize templates from the Nuclei-Templates-Collection"""
+        print("📝 Processing additional nuclei templates...")
+        
+        try:
+            # Create bulk_clone_repos.py if it doesn't exist in the collection
+            bulk_clone_script = collection_dir / "bulk_clone_repos.py"
+            if not bulk_clone_script.exists():
+                script_content = '''
+import os
+import subprocess
+from concurrent.futures import ThreadPoolExecutor
+
+def clone_repo(repo_url, base_dir):
+    try:
+        repo_name = repo_url.split('/')[-1].replace('.git', '')
+        target_dir = os.path.join(base_dir, repo_name)
+        if not os.path.exists(target_dir):
+            subprocess.run(['git', 'clone', repo_url, target_dir], check=True)
+            print(f"Successfully cloned {repo_url}")
+    except Exception as e:
+        print(f"Failed to clone {repo_url}: {str(e)}")
+
+def main():
+    base_dir = "templates"
+    os.makedirs(base_dir, exist_ok=True)
+    
+    # Read repository URLs from README.md
+    with open("README.md", "r") as f:
+        content = f.read()
+    
+    # Extract repository URLs
+    repos = []
+    for line in content.split('\n'):
+        if line.startswith('https://github.com/') and 'nuclei' in line.lower():
+            repos.append(line.strip())
+    
+    # Clone repositories in parallel
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        for repo in repos:
+            executor.submit(clone_repo, repo, base_dir)
+
+if __name__ == "__main__":
+    main()
+'''
+                with open(bulk_clone_script, 'w') as f:
+                    f.write(script_content)
+            
+            # Run the bulk clone script
+            subprocess.run([sys.executable, str(bulk_clone_script)], cwd=str(collection_dir), check=True)
+            
+            # Create a unified templates directory
+            unified_dir = collection_dir / "unified_templates"
+            os.makedirs(unified_dir, exist_ok=True)
+            
+            # Copy all .yaml files to unified directory
+            subprocess.run(f"find {collection_dir}/templates -name '*.yaml' -exec cp {{}} {unified_dir} \\;", shell=True)
+            subprocess.run(f"find {collection_dir}/templates -name '*.yml' -exec cp {{}} {unified_dir} \\;", shell=True)
+            
+            print(f"✅ Successfully processed and organized templates in {unified_dir}")
+            
+        except Exception as e:
+            logger.error(f"Error processing template collection: {str(e)}")
+            print(f"{Fore.YELLOW}⚠️ Warning: Some templates may not have been processed correctly{Style.RESET_ALL}")
 
     def _setup_database(self):
         """Set up PostgreSQL database"""
@@ -328,7 +488,8 @@ class ReconBuddySetup:
             "RECONBUDDY_TOOLS": str(self.tools_dir),
             "RECONBUDDY_WORDLISTS": str(self.wordlists_dir),
             "GOPATH": str(Path.home() / "go"),
-            "PATH": f"$PATH:$GOPATH/bin:{str(self.tools_dir)}/massdns/bin"
+            "PATH": f"$PATH:$GOPATH/bin:{str(self.tools_dir)}/massdns/bin",
+            "NUCLEI_TEMPLATES_PATH": f"{str(self.tools_dir)}/nuclei-templates:{str(self.tools_dir)}/nuclei-templates-collection/unified_templates"
         }
         
         # Add to shell rc file
